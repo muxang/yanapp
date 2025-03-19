@@ -1,4 +1,8 @@
-export const CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000"; // Deploy the contract and update this
+if (!process.env.NEXT_PUBLIC_CONTRACT_ADDRESS) {
+  throw new Error("CONTRACT_ADDRESS is not defined in environment variables");
+}
+
+export const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
 
 export const CONTRACT_ABI = [
   {
