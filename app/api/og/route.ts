@@ -1,57 +1,59 @@
-import { NextResponse } from "next/server";
-import { createCanvas, loadImage } from "canvas";
+import { createCanvas, GlobalFonts, SKRSContext2D } from "@napi-rs/canvas";
+import { NextRequest } from "next/server";
+import path from "path";
 
-export async function GET() {
-  // Create a canvas for the frame image (1200x630 is recommended for frames)
-  const width = 1200;
-  const height = 630;
+// 注册字体
+GlobalFonts.registerFromPath(
+  path.join(process.cwd(), "public/fonts/SF-Pro-Display-Medium.otf"),
+  "SF Pro Display"
+);
+
+const width = 1200;
+const height = 630;
+
+function createGradientBackground(ctx: SKRSContext2D) {
+  const gradient = ctx.createLinearGradient(0, 0, width, height);
+  gradient.addColorStop(0, "#1a1a1a");
+  gradient.addColorStop(1, "#2a2a2a");
+  return gradient;
+}
+
+export async function GET(req: NextRequest) {
   const canvas = createCanvas(width, height);
   const ctx = canvas.getContext("2d");
 
-  // Create Apple-style background
-  ctx.fillStyle = "#f9f9f9";
+  // 设置背景
+  ctx.fillStyle = createGradientBackground(ctx);
   ctx.fillRect(0, 0, width, height);
 
-  // Add light gradient
-  const gradient = ctx.createLinearGradient(0, 0, 0, height);
-  gradient.addColorStop(0, "rgba(0, 122, 255, 0.05)");
-  gradient.addColorStop(1, "rgba(0, 122, 255, 0.15)");
-  ctx.fillStyle = gradient;
+  // 添加光效
+  const glowGradient = ctx.createRadialGradient(
+    width / 2,
+    height / 2,
+    0,
+    width / 2,
+    height / 2,
+    width / 2
+  );
+  glowGradient.addColorStop(0, "rgba(255, 255, 255, 0.1)");
+  glowGradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+  ctx.fillStyle = glowGradient;
   ctx.fillRect(0, 0, width, height);
 
-  // Add blue shape in corner
-  ctx.beginPath();
-  ctx.fillStyle = "rgba(0, 122, 255, 0.8)";
-  ctx.moveTo(0, 0);
-  ctx.lineTo(width * 0.4, 0);
-  ctx.lineTo(0, height * 0.4);
-  ctx.closePath();
-  ctx.fill();
-
-  // Add title text
-  ctx.fillStyle = "#000000";
-  ctx.font = 'bold 80px "SF Pro Display", Arial';
+  // 设置文本样式
+  ctx.font = '72px "SF Pro Display"';
   ctx.textAlign = "center";
-  ctx.fillText("Daily Check-in", width / 2, height / 2 - 50);
+  ctx.fillStyle = "#ffffff";
+  ctx.fillText("每日签到", width / 2, height / 2 - 40);
 
-  // Add subtitle
-  ctx.font = '40px "SF Pro Display", Arial';
-  ctx.fillStyle = "#666666";
-  ctx.fillText("Earn points and rewards", width / 2, height / 2 + 50);
+  ctx.font = '36px "SF Pro Display"';
+  ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+  ctx.fillText("连续签到获得更多积分", width / 2, height / 2 + 40);
 
-  // Add call to action
-  ctx.fillStyle = "rgb(0, 122, 255)";
-  ctx.font = 'bold 36px "SF Pro Display", Arial';
-  ctx.fillText("Tap to check in now", width / 2, height - 100);
-
-  // Convert the canvas to a buffer
-  const buffer = canvas.toBuffer("image/png");
-
-  // Return the image as a response
-  return new NextResponse(buffer, {
+  const buffer = await canvas.encode("png");
+  return new Response(buffer, {
     headers: {
       "Content-Type": "image/png",
-      "Cache-Control": "public, max-age=60, s-maxage=60",
     },
   });
 }
