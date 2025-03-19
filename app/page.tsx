@@ -12,36 +12,33 @@ export default function Home() {
 
   useEffect(() => {
     const loadContext = async () => {
-      try {
-        const ctx = await sdk.context;
-        setContext(ctx);
-        console.log("Frame context loaded:", ctx);
-      } catch (error) {
-        console.error("Failed to load frame context:", error);
-      }
+      const ctx = await sdk.context;
+      setContext(ctx);
     };
     loadContext();
   }, []);
 
   return (
-    <div className="w-[300px] mx-auto py-4 px-2">
-      <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold mb-2">每日签到</h1>
-        <p className="text-gray-600">连续签到获得更多积分</p>
+    <div className="w-[300px] mx-auto py-6 px-4 space-y-6">
+      <div className="text-center space-y-2">
+        <h1 className="text-2xl font-bold bg-gradient-to-r from-[--primary] to-[--primary-dark] bg-clip-text text-transparent">
+          每日签到
+        </h1>
+        <p className="text-[--text-secondary]">连续签到获得更多积分</p>
       </div>
 
-      {context && (
-        <div className="bg-gray-100 p-4 rounded-lg mb-4">
-          <pre className="text-xs overflow-x-auto">
+      <div className="space-y-6">
+        <CheckInButton />
+        {isConnected && <StatsDisplay />}
+      </div>
+
+      {context && process.env.NODE_ENV === "development" && (
+        <div className="card mt-6 text-xs">
+          <pre className="overflow-x-auto">
             {JSON.stringify(context, null, 2)}
           </pre>
         </div>
       )}
-
-      <div className="space-y-4">
-        <CheckInButton />
-        {isConnected && <StatsDisplay />}
-      </div>
     </div>
   );
 }

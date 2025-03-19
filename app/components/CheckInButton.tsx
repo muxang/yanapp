@@ -19,11 +19,7 @@ export function CheckInButton() {
       setIsLoading(true);
       setError(null);
       const tx = await checkIn();
-
-      // 等待交易确认
       await sdk.actions.ready();
-
-      // 刷新用户数据
       await refetch();
     } catch (error) {
       console.error("Check-in failed:", error);
@@ -40,19 +36,32 @@ export function CheckInButton() {
       Date.now() / 1000 - Number(userInfo.lastCheckIn) >= 86400);
 
   return (
-    <div>
+    <div className="animate-slide-up">
       <button
         onClick={handleCheckIn}
         disabled={!canCheckIn || isLoading}
-        className={`w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed ${
-          isLoading ? "animate-pulse" : ""
-        }`}
+        className={`button-primary w-full ${isLoading ? "button-loading" : ""}`}
       >
         {isLoading ? "签到中..." : "每日签到"}
       </button>
-      {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+      {error && <p className="error-text">{error}</p>}
       {!canCheckIn && isConnected && userInfo && (
-        <p className="text-gray-500 text-sm mt-2">今日已签到，请明天再来</p>
+        <div className="success-text flex items-center justify-center gap-2">
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+          <span>今日已签到，请明天再来</span>
+        </div>
       )}
     </div>
   );

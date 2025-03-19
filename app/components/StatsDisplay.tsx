@@ -1,8 +1,8 @@
 "use client";
 
-import { useUserInfo } from "@/hooks/useContract";
-import { UserInfo } from "../contracts";
+import { useUserInfo } from "../hooks/useContract";
 import { useAccount } from "wagmi";
+import { StatsCard } from "./StatsCard";
 
 export function StatsDisplay() {
   const { address } = useAccount();
@@ -12,56 +12,40 @@ export function StatsDisplay() {
     return null;
   }
 
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-2 gap-4 mt-6">
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className="apple-card animate-pulse">
-            <div className="h-4 w-20 bg-gray-200 rounded mb-2"></div>
-            <div className="h-6 w-12 bg-gray-300 rounded"></div>
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  if (!userInfo) {
-    return <div className="text-center mt-6 text-gray-500">还没有签到记录</div>;
-  }
-
   const stats = [
     {
       label: "连续签到",
-      value: userInfo.consecutiveCheckIns.toString(),
+      value: userInfo?.consecutiveCheckIns.toString() || "0",
       unit: "天",
     },
     {
       label: "总积分",
-      value: userInfo.totalPoints.toString(),
+      value: userInfo?.totalPoints.toString() || "0",
       unit: "分",
     },
     {
       label: "总签到",
-      value: userInfo.totalCheckIns.toString(),
+      value: userInfo?.totalCheckIns.toString() || "0",
       unit: "次",
     },
     {
       label: "上次签到",
-      value: new Date(Number(userInfo.lastCheckIn) * 1000).toLocaleDateString(),
-      unit: "",
+      value: userInfo?.lastCheckIn
+        ? new Date(Number(userInfo.lastCheckIn) * 1000).toLocaleDateString()
+        : "-",
     },
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-4 mt-6">
-      {stats.map(({ label, value, unit }) => (
-        <div key={label} className="apple-card">
-          <div className="text-sm text-gray-500 mb-1">{label}</div>
-          <div className="text-2xl font-semibold value-animation">
-            {value}
-            {unit && <span className="text-base ml-1">{unit}</span>}
-          </div>
-        </div>
+    <div className="stats-grid animate-slide-up">
+      {stats.map((stat) => (
+        <StatsCard
+          key={stat.label}
+          label={stat.label}
+          value={stat.value}
+          unit={stat.unit}
+          isLoading={isLoading}
+        />
       ))}
     </div>
   );
