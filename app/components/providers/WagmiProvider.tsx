@@ -16,7 +16,15 @@ const config = createConfig({
   connectors: [frameConnector()],
 });
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 0, // 禁用自动重试
+      refetchOnWindowFocus: false, // 禁用窗口聚焦时重新获取
+      staleTime: 5000, // 数据5秒内认为是新鲜的
+    },
+  },
+});
 
 export function WagmiProvider({ children }: { children: React.ReactNode }) {
   const [isSDKLoaded, setIsSDKLoaded] = useState(false);

@@ -1,23 +1,42 @@
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
-import { CHECK_IN_ABI } from "./abi";
-import { getContractConfig } from "./config";
-import { UserInfo } from "./types";
+import { CHECK_IN_ABI } from "../contracts/abi";
+import { getContractConfig } from "../contracts/config";
+import { UserInfo } from "../contracts/types";
+import sdk from "@farcaster/frame-sdk";
 
+/**
+ * Hook for handling check-in functionality
+ * @returns Object containing checkIn function
+ */
 export function useCheckIn() {
   const { writeContractAsync } = useWriteContract();
   const config = getContractConfig();
 
   return {
     checkIn: async () => {
-      return writeContractAsync({
-        address: config.address,
-        abi: CHECK_IN_ABI,
-        functionName: "checkIn",
-      });
+      try {
+        const tx = await writeContractAsync({
+          address: config.address,
+          abi: CHECK_IN_ABI,
+          functionName: "checkIn",
+        });
+
+        // 等待交易确认
+        await sdk.actions.ready();
+        return tx;
+      } catch (error) {
+        console.error("Check-in failed:", error);
+        throw error;
+      }
     },
   };
 }
 
+/**
+ * Hook for fetching user information from the contract
+ * @param address Optional address to fetch info for. If not provided, uses connected wallet address
+ * @returns Object containing user info, loading state, and refetch function
+ */
 export function useUserInfo(address?: `0x${string}`) {
   const { address: userAddress } = useAccount();
   const config = getContractConfig();
@@ -30,6 +49,7 @@ export function useUserInfo(address?: `0x${string}`) {
     args: targetAddress ? [targetAddress] : undefined,
     query: {
       enabled: !!targetAddress,
+      staleTime: 5000, // 5秒内认为数据是新鲜的
     },
   });
 

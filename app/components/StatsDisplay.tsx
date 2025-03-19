@@ -1,6 +1,7 @@
 "use client";
 
-import { useUserInfo } from "../contracts";
+import { useUserInfo } from "@/hooks/useContract";
+import { UserInfo } from "../contracts";
 import { useAccount } from "wagmi";
 
 export function StatsDisplay() {
