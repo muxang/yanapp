@@ -1,6 +1,7 @@
 import sdk from "@farcaster/frame-sdk";
 import { SwitchChainError, fromHex, getAddress, numberToHex } from "viem";
 import { ChainNotConfiguredError, createConnector } from "wagmi";
+import { base } from "wagmi/chains";
 
 frameConnector.type = "frameConnector" as const;
 
@@ -40,11 +41,11 @@ export function frameConnector() {
       }
       initialized = await initializeSDK();
       if (initialized) {
-        await this.connect({ chainId: config.chains[0].id });
+        await this.connect();
       }
     },
 
-    async connect({ chainId } = {}) {
+    async connect() {
       if (!isFrameEnvironment()) {
         throw new Error("Farcaster Frame environment not available");
       }
@@ -66,17 +67,46 @@ export function frameConnector() {
           method: "eth_requestAccounts",
         });
 
-        let currentChainId = await this.getChainId();
-        if (chainId && currentChainId !== chainId) {
-          const chain = await this.switchChain!({ chainId });
-          currentChainId = chain.id;
+        // 获取当前链ID
+        const currentChainId = await this.getChainId();
+
+        // 如果不是 Base 链，尝试切换
+        if (currentChainId !== base.id) {
+          try {
+            await provider.request({
+              method: "wallet_switchEthereumChain",
+              params: [{ chainId: numberToHex(base.id) }],
+            });
+          } catch (error: any) {
+            // 如果链未添加，则添加 Base 链
+            if (error.code === 4902) {
+              await provider.request({
+                method: "wallet_addEthereumChain",
+                params: [
+                  {
+                    chainId: numberToHex(base.id),
+                    chainName: "Base",
+                    nativeCurrency: {
+                      name: "Ethereum",
+                      symbol: "ETH",
+                      decimals: 18,
+                    },
+                    rpcUrls: ["https://mainnet.base.org"],
+                    blockExplorerUrls: ["https://basescan.org"],
+                  },
+                ],
+              });
+            } else {
+              throw error;
+            }
+          }
         }
 
         connected = true;
 
         return {
           accounts: accounts.map((x) => getAddress(x)),
-          chainId: currentChainId,
+          chainId: base.id,
         };
       } catch (error) {
         console.error("Failed to connect:", error);

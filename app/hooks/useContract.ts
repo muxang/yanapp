@@ -3,6 +3,7 @@ import { CHECK_IN_ABI } from "../contracts/abi";
 import { getContractConfig } from "../contracts/config";
 import { UserInfo } from "../contracts/types";
 import sdk from "@farcaster/frame-sdk";
+import { base } from "wagmi/chains";
 
 /**
  * Hook for handling check-in functionality
