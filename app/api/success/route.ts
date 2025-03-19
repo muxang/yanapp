@@ -1,12 +1,16 @@
 import { createCanvas, GlobalFonts, SKRSContext2D } from "@napi-rs/canvas";
 import { NextRequest } from "next/server";
-import path from "path";
+import { join } from "path";
 
 // 注册字体
-GlobalFonts.registerFromPath(
-  path.join(process.cwd(), "public/fonts/SF-Pro-Display-Medium.otf"),
-  "SF Pro Display"
-);
+try {
+  GlobalFonts.registerFromPath(
+    join(process.cwd(), "public/fonts/SF-Pro-Display-Medium.otf"),
+    "SF Pro Display"
+  );
+} catch (error) {
+  console.error("Failed to register font:", error);
+}
 
 const width = 1200;
 const height = 630;
