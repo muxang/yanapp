@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --no-trace",
+    "dev": "next dev ",
     "dev:https": "node scripts/dev.js",
     "build": "next build",
     "start": "next start",
@@ -23,9 +23,9 @@
     "wagmi": "^2.5.7"
   },
   "devDependencies": {
-    "@types/node": "^20.11.24",
-    "@types/react": "^18.2.61",
-    "@types/react-dom": "^18.2.19",
+    "@types/node": "^20.17.24",
+    "@types/react": "^18.3.19",
+    "@types/react-dom": "^18.3.5",
     "autoprefixer": "^10.0.1",
     "dotenv": "^16.4.5",
     "eslint": "^8",

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createCanvas, loadImage, registerFont } from "canvas";
 
 // This endpoint handles the frame action (check-in)
 export async function POST(req: NextRequest) {
