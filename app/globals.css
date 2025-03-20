@@ -133,7 +133,8 @@ body {
   gap: 12px;
   justify-content: center;
   margin-bottom: 2rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  padding: 0 20px;
 }
 
 .day-circle {
@@ -146,6 +147,7 @@ body {
   font-weight: 500;
   position: relative;
   border: 2px solid white;
+  flex-shrink: 0;
 }
 
 .day-active {
