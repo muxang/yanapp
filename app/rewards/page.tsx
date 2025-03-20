@@ -22,18 +22,21 @@ export default function RewardsPage() {
       title: "NFT Collection Access",
       description: "Get early access to our exclusive NFT collection drops",
       points: 500,
+      available: true,
     },
     {
       id: 2,
       title: "Whitelist Spot",
       description: "Secure a whitelist spot for upcoming token launches",
       points: 1000,
+      available: true,
     },
     {
       id: 3,
       title: "DAO Voting Power",
       description: "Earn voting rights in our community governance",
       points: 1500,
+      available: true,
     },
   ];
 
@@ -99,16 +102,23 @@ export default function RewardsPage() {
                   <button
                     className={`button-secondary reward-button ${
                       userInfo?.totalPoints &&
-                      Number(userInfo.totalPoints) >= reward.points
+                      Number(userInfo.totalPoints) >= reward.points &&
+                      reward.available
                         ? ""
                         : "button-disabled"
                     }`}
                     disabled={
                       !userInfo?.totalPoints ||
-                      Number(userInfo.totalPoints) < reward.points
+                      Number(userInfo.totalPoints) < reward.points ||
+                      !reward.available
                     }
                   >
-                    Redeem
+                    {userInfo?.totalPoints &&
+                    Number(userInfo.totalPoints) >= reward.points
+                      ? "Redeem"
+                      : `Need ${
+                          reward.points - (Number(userInfo?.totalPoints) || 0)
+                        } more`}
                   </button>
                 </div>
               ))}
@@ -136,7 +146,7 @@ export default function RewardsPage() {
 
         {/* 通知按钮居中显示 */}
         <div className="notification-center">
-          <button className="button-secondary" onClick={handleNotification}>
+          <button className="notification-button" onClick={handleNotification}>
             <svg
               width="18"
               height="18"
@@ -151,7 +161,7 @@ export default function RewardsPage() {
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
               <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
             </svg>
-            Get Notified
+            Get Notified When New Rewards Launch
           </button>
         </div>
 

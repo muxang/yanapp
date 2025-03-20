@@ -110,9 +110,17 @@ export default function Home() {
                 }
               >
                 {i + 1}
-                {(i + 1) % 3 === 0 && <div className="day-bonus">+30</div>}
+                {(i + 1) % 3 === 0 && (
+                  <div className="day-bonus">+{(i + 1) * 5}</div>
+                )}
               </div>
             ))}
+            {consecutiveDays > 7 && (
+              <div className="day-circle day-special">
+                {consecutiveDays}
+                <div className="day-bonus">+{consecutiveDays * 5}</div>
+              </div>
+            )}
           </div>
 
           <CheckInButton />
@@ -147,7 +155,7 @@ export default function Home() {
                   <path d="M20 6L9 17l-5-5" />
                 </svg>
               </div>
-              <div>Check in daily to earn 100 points</div>
+              <div>Check in daily to earn 10 base points</div>
             </div>
             <div className="rule-item">
               <div className="check-icon">
@@ -161,7 +169,7 @@ export default function Home() {
                   <path d="M20 6L9 17l-5-5" />
                 </svg>
               </div>
-              <div>Consecutive check-ins earn bonus points</div>
+              <div>Earn streak bonus: day × 5 points (Day 3 = +15 bonus)</div>
             </div>
             <div className="rule-item">
               <div className="check-icon">
@@ -175,7 +183,7 @@ export default function Home() {
                   <path d="M20 6L9 17l-5-5" />
                 </svg>
               </div>
-              <div>Redeem points for MWGA rewards</div>
+              <div>Redeem points for MWGA rewards in the Rewards tab</div>
             </div>
           </div>
         </div>

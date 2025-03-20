@@ -34,8 +34,14 @@ export const CheckInButton = () => {
         ? Date.now() / 1000 - Number(userInfo.lastCheckIn) <= 86400 * 2
         : false;
 
-      // 计算预期获得的积分
-      const expectedPoints = 10 + (isConsecutiveCheckIn ? 5 : 0);
+      // 获取连续签到天数
+      const consecutiveDays = isConsecutiveCheckIn
+        ? Number(userInfo?.consecutiveCheckIns || 0) + 1
+        : 1;
+
+      // 计算预期获得的积分 - 基础10分 + 连续签到奖励(天数 * 5)
+      const streakBonus = isConsecutiveCheckIn ? consecutiveDays * 5 : 0;
+      const expectedPoints = 10 + streakBonus;
 
       const tx = await checkIn();
       await sdk.actions.ready(); // 等待处理完成
@@ -64,20 +70,51 @@ export const CheckInButton = () => {
     userInfo?.lastCheckIn &&
     Date.now() / 1000 - Number(userInfo.lastCheckIn) <= 86400 * 2;
 
+  // 获取连续签到天数和奖励
+  const consecutiveDays = Number(userInfo?.consecutiveCheckIns || 0);
+  const expectedBonusPoints = isEligibleForBonus
+    ? (consecutiveDays + 1) * 5
+    : 0;
+
+  // 计算下次签到的等待时间
+  const formatTimeRemaining = () => {
+    if (!userInfo?.lastCheckIn) return "";
+
+    const secondsElapsed = Date.now() / 1000 - Number(userInfo.lastCheckIn);
+    const secondsRemaining = Math.max(0, 86400 - secondsElapsed);
+
+    const hours = Math.floor(secondsRemaining / 3600);
+    const minutes = Math.floor((secondsRemaining % 3600) / 60);
+
+    return `${hours}h ${minutes}m`;
+  };
+
   if (isHasCheckedInToday) {
     return (
       <div className="mt-4 w-full">
         <button className="already-checked-in" disabled>
-          Already Checked In
+          <svg className="w-5 h-5 mr-1" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+          </svg>
+          Already Checked In Today
         </button>
-        <div className="text-sm text-center mt-2 text-gray-500">
-          Next check-in available in{" "}
-          {userInfo?.lastCheckIn
-            ? Math.ceil(
-                86400 - (Date.now() / 1000 - Number(userInfo.lastCheckIn))
-              )
-            : 0}{" "}
-          seconds
+        <div className="text-sm text-center mt-2 text-gray-500 flex items-center justify-center">
+          <svg
+            className="w-4 h-4 mr-1"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          <span>
+            Next check-in available in{" "}
+            <span className="font-medium text-primary">
+              {formatTimeRemaining()}
+            </span>
+          </span>
         </div>
       </div>
     );
@@ -104,7 +141,8 @@ export const CheckInButton = () => {
               <span className="font-bold">+{earnedPoints} points</span> earned
               {isConsecutive && (
                 <div className="text-xs text-primary">
-                  Including 5 bonus points for consecutive check-in!
+                  Including {consecutiveDays * 5} bonus points for day{" "}
+                  {consecutiveDays} streak!
                 </div>
               )}
             </div>
@@ -119,7 +157,11 @@ export const CheckInButton = () => {
               isLoading ? "button-loading" : ""
             }`}
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+            <svg
+              className="w-5 h-5 mr-1"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
               <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
             </svg>
             {!isLoading && "Check In Now"}
@@ -134,7 +176,8 @@ export const CheckInButton = () => {
               >
                 <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 10c-.83 3.05-3.23 5-6.24 5-1.35 0-2.49-.31-3.43-.94l.64-1.8c.65.45 1.48.74 2.5.74 1.63 0 3.1-.79 3.97-2h-5.49c.01-.2.01-.41 0-.61-.01-.2-.01-.41 0-.61h5.49c-.87-1.21-2.34-2-3.97-2-1.02 0-1.85.29-2.5.74l-.64-1.8C9.5 7.31 10.64 7 11.99 7c3.01 0 5.4 1.95 6.24 5h-2.4c.11.2.21.4.29.61.08.2.15.41.19.61h2.4z" />
               </svg>
-              Eligible for consecutive check-in bonus (+5 points)
+              Day {consecutiveDays + 1} streak bonus: +{expectedBonusPoints}{" "}
+              points
             </div>
           )}
         </>

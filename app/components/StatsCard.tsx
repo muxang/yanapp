@@ -4,10 +4,17 @@ interface StatsCardProps {
   label: string;
   value: string | number;
   unit?: string;
+  secondaryText?: string;
   isLoading?: boolean;
 }
 
-export function StatsCard({ label, value, unit, isLoading }: StatsCardProps) {
+export function StatsCard({
+  label,
+  value,
+  unit,
+  secondaryText,
+  isLoading,
+}: StatsCardProps) {
   if (isLoading) {
     return (
       <div className="stat-card">
@@ -24,6 +31,7 @@ export function StatsCard({ label, value, unit, isLoading }: StatsCardProps) {
         {value}
         {unit && <span className="stat-unit">{unit}</span>}
       </div>
+      {secondaryText && <div className="stat-secondary">{secondaryText}</div>}
     </div>
   );
 }
