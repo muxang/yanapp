@@ -1,4 +1,5 @@
 export async function GET() {
+  let i = 1;
   const config = {
     accountAssociation: {
       header:
@@ -12,9 +13,9 @@ export async function GET() {
       name: "WrapAI",
       iconUrl: "https://wrapai.app/logo.png",
       homeUrl: "https://wrapai.app",
-      imageUrl: "https://wrapai.app/logo.png",
+      imageUrl: "https://wrapai.app/logo-hd.png",
       buttonTitle: "Check this out",
-      splashImageUrl: "https://wrapai.app/logo.png",
+      splashImageUrl: "https://wrapai.app/logo-large.png",
       splashBackgroundColor: "#eeccff",
       webhookUrl: "https://wrapai.app/api/webhook",
     },
