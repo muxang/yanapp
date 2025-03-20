@@ -26,21 +26,20 @@ export default function CheckIn() {
   const renderStreakIndicators = () => {
     const consecutiveDays = Number(userInfo?.consecutiveCheckIns || 0);
 
+    // Display all 7 days without any progress bar element
     return (
       <div className="check-in-days">
-        {[...Array(7)].map((_, i) => (
+        {[1, 2, 3, 4, 5, 6, 7].map((day) => (
           <div
-            key={i}
+            key={day}
             className={
-              i < consecutiveDays
+              day <= consecutiveDays
                 ? "day-circle day-active"
                 : "day-circle day-inactive"
             }
           >
-            {i + 1}
-            {(i + 1) % 3 === 0 && (
-              <div className="day-bonus">+{(i + 1) * 5}</div>
-            )}
+            {day}
+            {day % 3 === 0 && <div className="day-bonus">+{day * 5}</div>}
           </div>
         ))}
       </div>
@@ -69,7 +68,7 @@ export default function CheckIn() {
           Earn streak bonus: day × 5 points (Day 3 = +15 bonus)
         </p>
         <p className="text-gray-600">
-          Redeem points for MWGA rewards in the Rewards tab
+          Redeem points for WrapAI rewards in the Rewards tab
         </p>
       </div>
     </div>
