@@ -234,84 +234,25 @@ export const CheckInButton = () => {
 };
 
 export default function CheckIn() {
-  const { address, isConnected } = useAccount();
-  const [timeUntilNextCheckIn, setTimeUntilNextCheckIn] = useState<string>("");
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isFrameLoaded, setIsFrameLoaded] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
-  const [frameContext, setFrameContext] = useState<FrameContext | null>(null);
-
-  // 使用合约hooks
+  const { isConnected } = useAccount();
   const { checkIn } = useCheckIn();
   const { userInfo, refetch } = useUserInfo();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const { isHasCheckedInToday } = useHasCheckedInToday();
 
-  // 从合约数据计算是否可以签到
-  const canCheckIn = isConnected && !isHasCheckedInToday;
-
-  // 初始化Frame SDK并获取用户上下文
   useEffect(() => {
-    async function initFrameSDK() {
+    const initFrame = async () => {
       try {
-        // 加载SDK
         await sdk.actions.ready();
-        setIsFrameLoaded(true);
-
-        // 获取用户上下文
-        const context = await sdk.context;
-        setFrameContext(context);
-        console.log("Frame context:", context);
-      } catch (error) {
-        console.error("Failed to initialize Frame SDK:", error);
+        // 自动尝试添加Frame
+        await sdk.actions.addFrame();
+      } catch (err) {
+        console.error("Failed to initialize Frame:", err);
       }
-    }
-
-    initFrameSDK();
+    };
+    initFrame();
   }, []);
-
-  // 计算下次签到时间
-  useEffect(() => {
-    if (!isConnected || !userInfo?.lastCheckIn) return;
-
-    const lastCheckInTime = Number(userInfo.lastCheckIn);
-    if (lastCheckInTime === 0) return;
-
-    const now = Math.floor(Date.now() / 1000);
-    const oneDayInSeconds = 24 * 60 * 60;
-    const nextCheckInTime = lastCheckInTime + oneDayInSeconds;
-
-    if (now < nextCheckInTime) {
-      const updateTimer = () => {
-        const secondsLeft = nextCheckInTime - Math.floor(Date.now() / 1000);
-        if (secondsLeft <= 0) {
-          setTimeUntilNextCheckIn("");
-          refetch(); // 刷新签到状态
-          clearInterval(intervalId);
-        } else {
-          setTimeUntilNextCheckIn(
-            formatDistanceToNow(nextCheckInTime * 1000, { addSuffix: true })
-          );
-        }
-      };
-
-      updateTimer();
-      const intervalId = setInterval(updateTimer, 60000);
-      return () => clearInterval(intervalId);
-    }
-  }, [isConnected, userInfo?.lastCheckIn, refetch]);
-
-  // 保存Frame到Farcaster
-  const handleSaveFrame = async () => {
-    if (!isFrameLoaded) return;
-    try {
-      await sdk.actions.openUrl(window.location.href);
-      setIsSaved(true);
-    } catch (err) {
-      console.error("Failed to save frame:", err);
-    }
-  };
 
   // 处理签到
   const handleCheckIn = async () => {
@@ -320,122 +261,83 @@ export default function CheckIn() {
     try {
       setIsLoading(true);
       setIsSuccess(false);
-      setIsError(false);
 
       // 调用合约签到
       await checkIn();
-
-      // 刷新用户数据
       await refetch();
-
       setIsSuccess(true);
     } catch (error) {
       console.error("Check-in error:", error);
-      setIsError(true);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // 获取用户显示名称
-  const getUserDisplayName = () => {
-    if (frameContext?.user?.displayName) {
-      return frameContext.user.displayName;
+  // 计算连续签到天数和奖励
+  const consecutiveDays = Number(userInfo?.consecutiveCheckIns || 0);
+  const isEligibleForBonus =
+    userInfo?.lastCheckIn &&
+    Date.now() / 1000 - Number(userInfo.lastCheckIn) <= 86400 * 2;
+  const expectedBonusPoints = isEligibleForBonus
+    ? (consecutiveDays + 1) * 5
+    : 0;
+
+  // 渲染连续签到指示器
+  const renderStreakIndicators = () => {
+    const indicators = [];
+    for (let i = 0; i < 7; i++) {
+      indicators.push(
+        <div
+          key={i}
+          className={`w-8 h-8 rounded-full ${
+            i < consecutiveDays ? "bg-[#4F6AF6]" : "bg-[#E5E7EB]"
+          } flex items-center justify-center text-white`}
+        >
+          {i + 1}
+        </div>
+      );
     }
-    if (frameContext?.user?.username) {
-      return `@${frameContext.user.username}`;
-    }
-    if (frameContext?.user?.fid) {
-      return `FID: ${frameContext.user.fid}`;
-    }
-    return "User";
+    return <div className="flex gap-2 justify-center mb-4">{indicators}</div>;
   };
 
+  if (!isConnected) {
+    return (
+      <div className="flex flex-col items-center gap-4">
+        <ConnectButton />
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full bg-gray-800 rounded-lg p-6 shadow-lg">
-      {!isConnected ? (
-        <div className="flex flex-col items-center">
-          <ConnectButton />
-          <p className="mt-4 text-gray-400">Connect wallet to check in</p>
-        </div>
+    <div className="flex flex-col items-center w-full max-w-md mx-auto">
+      {renderStreakIndicators()}
+
+      {isHasCheckedInToday ? (
+        <button
+          disabled
+          className="w-full py-4 px-6 rounded-full bg-gray-200 text-gray-500 font-medium text-lg"
+        >
+          Already Checked In
+        </button>
       ) : (
-        <div className="space-y-6">
-          {frameContext?.user && (
-            <div className="bg-gray-700 p-4 rounded-lg text-center mb-4">
-              <p className="text-gray-300 text-sm">Welcome</p>
-              <p className="text-xl font-bold">{getUserDisplayName()}</p>
-            </div>
+        <button
+          onClick={handleCheckIn}
+          disabled={isLoading}
+          className="w-full py-4 px-6 rounded-full bg-[#4F6AF6] hover:bg-[#4059DC] text-white font-medium text-lg flex items-center justify-center gap-2 transition-colors"
+        >
+          <span className="text-2xl">✌️</span>
+          Check in Now
+          {expectedBonusPoints > 0 && (
+            <span className="ml-1 bg-[#FFA500] text-white text-sm px-2 py-0.5 rounded-full">
+              +{expectedBonusPoints}
+            </span>
           )}
+        </button>
+      )}
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-gray-700 p-4 rounded-lg text-center">
-              <p className="text-gray-400 text-sm">Current Streak</p>
-              <p className="text-2xl font-bold">
-                {userInfo ? Number(userInfo.consecutiveCheckIns) : 0}
-              </p>
-            </div>
-            <div className="bg-gray-700 p-4 rounded-lg text-center">
-              <p className="text-gray-400 text-sm">Total Points</p>
-              <p className="text-2xl font-bold">
-                {userInfo ? Number(userInfo.totalPoints) : 0}
-              </p>
-            </div>
-          </div>
-
-          <div className="text-center">
-            {canCheckIn ? (
-              <button
-                onClick={handleCheckIn}
-                disabled={isLoading}
-                className="w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg font-medium shadow-lg hover:opacity-90 transition-all disabled:opacity-50"
-              >
-                {isLoading ? "Checking in..." : "Check In Now"}
-              </button>
-            ) : (
-              <div>
-                <div className="bg-gray-700 p-4 rounded-lg mb-2">
-                  <p className="text-sm text-gray-400">
-                    Next check-in available
-                  </p>
-                  <p className="font-medium">{timeUntilNextCheckIn}</p>
-                </div>
-                <button
-                  disabled
-                  className="w-full py-3 px-4 bg-gray-700 rounded-lg font-medium opacity-50 cursor-not-allowed"
-                >
-                  Already Checked In
-                </button>
-              </div>
-            )}
-          </div>
-
-          {isFrameLoaded && (
-            <div className="mt-4">
-              <button
-                onClick={handleSaveFrame}
-                disabled={isSaved}
-                className={`w-full py-2 px-4 rounded-lg font-medium transition-all ${
-                  isSaved
-                    ? "bg-green-600 text-white"
-                    : "bg-gray-700 text-white hover:bg-gray-600"
-                }`}
-              >
-                {isSaved ? "✓ Saved to Farcaster" : "Save to Farcaster"}
-              </button>
-            </div>
-          )}
-
-          {isSuccess && (
-            <div className="bg-green-900/30 border border-green-500 p-3 rounded-lg">
-              <p className="text-green-400">Successfully checked in!</p>
-            </div>
-          )}
-
-          {isError && (
-            <div className="bg-red-900/30 border border-red-500 p-3 rounded-lg">
-              <p className="text-red-400">Failed to check in. Try again.</p>
-            </div>
-          )}
+      {isSuccess && (
+        <div className="mt-4 text-center text-green-500">
+          Successfully checked in!
         </div>
       )}
     </div>
