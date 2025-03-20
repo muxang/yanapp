@@ -63,10 +63,34 @@ export default function RewardsPage() {
       </header>
 
       <main className="animate-slide-up">
+        {/* 将通知按钮移到顶部并增加视觉突出显示 */}
+        <div className="notification-banner">
+          <button
+            className="notification-button-highlighted"
+            onClick={handleNotification}
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="mr-1"
+            >
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            Get Notified of New Rewards
+          </button>
+        </div>
+
         {/* 有奖励列表的情况 */}
         {rewards.length > 0 ? (
           <div>
-            <div className="center-text mb-4">
+            <div className="center-text mb-4 mt-4">
               <h2 className="rewards-title">Available Rewards</h2>
               <p className="rewards-subtitle">
                 Redeem your points for these exclusive rewards
@@ -127,27 +151,6 @@ export default function RewardsPage() {
             </p>
           </div>
         )}
-
-        {/* 通知按钮居中显示 */}
-        <div className="notification-center">
-          <button className="notification-button" onClick={handleNotification}>
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="mr-1"
-            >
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-            </svg>
-            Get Notified
-          </button>
-        </div>
 
         {showNotification && (
           <div className="notification-toast">

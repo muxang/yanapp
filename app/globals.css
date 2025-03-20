@@ -645,3 +645,41 @@ body {
   transform: translateY(0);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
+
+.notification-banner {
+  background-color: #f0f8ff;
+  padding: 16px;
+  border-radius: var(--border-radius);
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(78, 124, 255, 0.2);
+  text-align: center;
+}
+
+.notification-button-highlighted {
+  background-color: #4e7cff;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  padding: 12px 24px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 8px rgba(78, 124, 255, 0.25);
+  margin: 0 auto;
+  transform: translateY(0);
+}
+
+.notification-button-highlighted:hover {
+  background-color: #3d6ae6;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(78, 124, 255, 0.35);
+}
+
+.notification-button-highlighted:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(78, 124, 255, 0.25);
+}
