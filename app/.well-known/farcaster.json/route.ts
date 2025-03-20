@@ -12,7 +12,7 @@ export async function GET() {
       name: "WrapAI",
       iconUrl: "https://wrapai.app/logo.png",
       homeUrl: "https://wrapai.app",
-      imageUrl: "https://wrapai.app/api/frame-image",
+      imageUrl: "https://wrapai.app/logo.png",
       buttonTitle: "Check this out",
       splashImageUrl: "https://wrapai.app/logo.png",
       splashBackgroundColor: "#eeccff",
