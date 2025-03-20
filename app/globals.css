@@ -42,9 +42,11 @@ body {
 .page-header {
   background: var(--primary);
   color: white;
-  padding: 24px 16px;
+  padding: 24px 16px 32px;
   margin: 0 -16px 16px;
   position: relative;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
 }
 
 .header-title {
@@ -371,6 +373,13 @@ body {
   justify-content: center;
 }
 
+.profile-header {
+  width: auto;
+  max-width: 100%;
+  margin: 0 -16px 16px;
+  padding-bottom: 24px;
+}
+
 .menu-item {
   display: flex;
   align-items: center;
@@ -379,10 +388,20 @@ body {
   border-bottom: 1px solid var(--border-color);
   text-decoration: none;
   color: var(--text-primary);
+  transition: background-color 0.2s;
+  cursor: pointer;
 }
 
 .menu-item:last-child {
   border-bottom: none;
+}
+
+.menu-item:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.menu-item:active {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .menu-icon {
@@ -529,4 +548,27 @@ body {
 .reward-card .button-secondary {
   padding: 6px 12px;
   font-size: 14px;
+}
+
+/* Notification toast */
+.notification-toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 1000;
+  animation: fadeInOut 3s ease;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translate(-50%, 20px); }
+  10% { opacity: 1; transform: translate(-50%, 0); }
+  90% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -20px); }
 }

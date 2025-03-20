@@ -10,3 +10,16 @@ export interface CheckInEvent {
   points: bigint;
   consecutiveCheckIns: bigint;
 }
+
+export interface Reward {
+  name: string;
+  description: string;
+  pointCost: bigint;
+  isActive: boolean;
+}
+
+export interface RedemptionRecord {
+  rewardId: bigint;
+  timestamp: bigint;
+  pointsSpent: bigint;
+}

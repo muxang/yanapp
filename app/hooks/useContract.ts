@@ -82,12 +82,26 @@ export function useUserInfo(address?: `0x${string}`) {
  */
 export function useHasCheckedInToday() {
   const { userInfo } = useUserInfo();
+  const { address } = useAccount();
+  const config = getContractConfig();
 
-  const isHasCheckedInToday = userInfo?.lastCheckIn
-    ? Date.now() / 1000 - Number(userInfo.lastCheckIn) < 86400
-    : false;
+  // 使用合约的canCheckIn方法结果的反向值来判断是否已签到
+  const { data: canCheckInResult, isLoading } = useReadContract({
+    address: config.address,
+    abi: CHECK_IN_ABI,
+    functionName: "canCheckIn",
+    args: address ? [address] : undefined,
+    query: {
+      enabled: !!address,
+      staleTime: 5000,
+    },
+  });
+
+  // 如果合约说用户可以签到，那么就意味着今天还没有签到
+  const isHasCheckedInToday = userInfo?.lastCheckIn ? !canCheckInResult : false;
 
   return {
     isHasCheckedInToday,
+    isLoading,
   };
 }
