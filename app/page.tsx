@@ -3,13 +3,14 @@
 import { useAccount } from "wagmi";
 import { CheckInButton } from "./components/CheckInButton";
 import { StatsDisplay } from "./components/StatsDisplay";
-import { useUserInfo } from "./hooks/useContract";
+import { useUserInfo, useHasCheckedInToday } from "./hooks/useContract";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function Home() {
   const { isConnected, address } = useAccount();
   const { userInfo, isLoading } = useUserInfo();
+  const { isHasCheckedInToday } = useHasCheckedInToday();
   const [consecutiveDays, setConsecutiveDays] = useState(0);
 
   useEffect(() => {
@@ -42,7 +43,12 @@ export default function Home() {
             <div className="text-6xl font-bold text-primary mb-2">
               {consecutiveDays}
             </div>
-            <div className="text-gray-500 mb-4">Consecutive Days</div>
+            <div className="text-gray-500 mb-1">Consecutive Days</div>
+            {userInfo?.lastCheckIn && (
+              <div className="last-check-in">
+                Last check-in: {isHasCheckedInToday ? "Today" : "Yesterday"}
+              </div>
+            )}
             <p className="text-gray-600 mb-6">
               {consecutiveDays > 0
                 ? `You're on a ${consecutiveDays} day streak!`
@@ -68,7 +74,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Stats Card */}
+        {/* Stats Cards */}
         <div className="stats-grid">
           <div className="stat-card">
             <div className="stat-label">Total Days</div>
@@ -154,7 +160,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Web3 Rewards Card */}
+        {/* MWGA Rewards Card */}
         <div className="card">
           <h2 className="section-title">
             <svg
@@ -186,7 +192,7 @@ export default function Home() {
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z" />
               </svg>
-              Learn More
+              Get Notified
             </button>
           </div>
         </div>
@@ -200,7 +206,7 @@ export default function Home() {
             viewBox="0 0 24 24"
             fill="currentColor"
           >
-            <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
+            <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
           </svg>
           <span>Check-in</span>
         </Link>

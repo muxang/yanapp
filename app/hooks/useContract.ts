@@ -75,3 +75,19 @@ export function useUserInfo(address?: `0x${string}`) {
     refetch,
   } as const;
 }
+
+/**
+ * Hook for checking if user has already checked in today
+ * @returns Object with flag indicating if user has checked in today
+ */
+export function useHasCheckedInToday() {
+  const { userInfo } = useUserInfo();
+
+  const isHasCheckedInToday = userInfo?.lastCheckIn
+    ? Date.now() / 1000 - Number(userInfo.lastCheckIn) < 86400
+    : false;
+
+  return {
+    isHasCheckedInToday,
+  };
+}

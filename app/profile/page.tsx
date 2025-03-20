@@ -57,7 +57,7 @@ export default function ProfilePage() {
             </div>
             <div className="stat-card">
               <div className="stat-label">Redeemed</div>
-              <div className="stat-value">2</div>
+              <div className="stat-value">0</div>
             </div>
           </div>
         </div>

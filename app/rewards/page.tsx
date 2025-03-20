@@ -28,7 +28,7 @@ export default function RewardsPage() {
       </header>
 
       <main className="px-4">
-        <div className="card text-center py-12">
+        <div className="card text-center py-8">
           <div className="gift-box">
             <svg
               className="w-24 h-24 text-primary"
