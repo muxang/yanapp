@@ -113,26 +113,23 @@ export const CheckInButton = () => {
       {error && <div className="error-text">{error}</div>}
 
       {success ? (
-        <div className="success-text animate-fade-in flex flex-col items-center justify-center gap-2">
-          <div className="flex items-center">
+        <div className="success-text flex flex-col items-center justify-center gap-2 p-4">
+          <div className="flex items-center justify-center mb-2">
             <svg
-              className="w-5 h-5 text-success mr-1"
+              className="w-8 h-8 text-green-500"
               viewBox="0 0 24 24"
               fill="currentColor"
             >
               <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
             </svg>
+          </div>
+          <div className="text-center text-green-500 text-lg font-medium">
             Check-in successful!
           </div>
           {earnedPoints && (
             <div className="text-center">
-              <span className="font-bold">+{earnedPoints} points</span> earned
-              {isConsecutive && (
-                <div className="text-xs text-primary">
-                  Including {consecutiveDays * 5} bonus points for day{" "}
-                  {consecutiveDays} streak!
-                </div>
-              )}
+              <span className="text-green-500">+{earnedPoints} points</span>{" "}
+              earned
             </div>
           )}
         </div>

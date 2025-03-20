@@ -34,7 +34,9 @@ export default function CheckIn() {
           <div
             className={`w-10 h-10 rounded-full ${
               i < consecutiveDays ? "bg-[#4F6AF6]" : "bg-[#E5E7EB]"
-            } flex items-center justify-center text-[#666666] border-2 border-white`}
+            } flex items-center justify-center text-${
+              i < consecutiveDays ? "white" : "[#666666]"
+            } border-2 border-white`}
           >
             {i + 1}
           </div>
@@ -59,13 +61,7 @@ export default function CheckIn() {
 
   return (
     <div className="flex flex-col items-center w-full max-w-md mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-2">Daily Check-in</h1>
-      <p className="text-gray-500 mb-6">
-        Last check-in:{" "}
-        {userInfo?.lastCheckIn
-          ? new Date(Number(userInfo.lastCheckIn) * 1000).toLocaleDateString()
-          : "Never"}
-      </p>
+      <h1 className="text-2xl font-bold mb-6">Daily Check-in</h1>
       {renderStreakIndicators()}
 
       <CheckInButton />

@@ -1,7 +1,6 @@
 "use client";
 
 import { useAccount } from "wagmi";
-import { CheckInButton } from "./components/CheckInButton";
 import { StatsDisplay } from "./components/StatsDisplay";
 import { useUserInfo, useHasCheckedInToday } from "./hooks/useContract";
 import { useEffect, useState } from "react";
@@ -73,92 +72,9 @@ export default function Home() {
             <StatsDisplay />
           </div>
 
-          {/* Check-in Button */}
+          {/* Check-in Component */}
           <div className="card">
-            <h2 className="section-title">Daily Check-in</h2>
-            <p className="last-check-in">
-              Last check-in:{" "}
-              {userInfo?.lastCheckIn && Number(userInfo.lastCheckIn) > 0
-                ? new Date(
-                    Number(userInfo.lastCheckIn) * 1000
-                  ).toLocaleDateString()
-                : "Never"}
-            </p>
-
-            <div className="check-in-days">
-              {[...Array(7)].map((_, i) => (
-                <div
-                  key={i}
-                  className={
-                    i < consecutiveDays
-                      ? "day-circle day-active"
-                      : "day-circle day-inactive"
-                  }
-                >
-                  {i + 1}
-                  {(i + 1) % 3 === 0 && (
-                    <div className="day-bonus">+{(i + 1) * 5}</div>
-                  )}
-                </div>
-              ))}
-              {consecutiveDays > 7 && (
-                <div className="day-circle day-special">
-                  {consecutiveDays}
-                  <div className="day-bonus">+{consecutiveDays * 5}</div>
-                </div>
-              )}
-            </div>
-
             <CheckIn />
-          </div>
-
-          {/* Rules */}
-          <div className="card">
-            <h2 className="section-title">How It Works</h2>
-            <div className="rules-list">
-              <div className="rule-item">
-                <div className="check-icon">
-                  <svg
-                    className="w-5 h-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
-                </div>
-                <div>Check in daily to earn 10 base points</div>
-              </div>
-              <div className="rule-item">
-                <div className="check-icon">
-                  <svg
-                    className="w-5 h-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
-                </div>
-                <div>Earn streak bonus: day × 5 points (Day 3 = +15 bonus)</div>
-              </div>
-              <div className="rule-item">
-                <div className="check-icon">
-                  <svg
-                    className="w-5 h-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
-                </div>
-                <div>Redeem points for MWGA rewards in the Rewards tab</div>
-              </div>
-            </div>
           </div>
         </main>
 
