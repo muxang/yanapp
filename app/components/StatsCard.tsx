@@ -10,21 +10,19 @@ interface StatsCardProps {
 export function StatsCard({ label, value, unit, isLoading }: StatsCardProps) {
   if (isLoading) {
     return (
-      <div className="stats-card">
-        <div className="loading-pulse h-4 w-20 mb-2"></div>
-        <div className="loading-pulse h-8 w-16"></div>
+      <div className="stat-card">
+        <div className="stat-label">Loading...</div>
+        <div className="animate-pulse bg-gray-200 h-8 w-16 rounded"></div>
       </div>
     );
   }
 
   return (
-    <div className="stats-card">
-      <div className="stats-label">{label}</div>
-      <div className="stats-value">
+    <div className="stat-card">
+      <div className="stat-label">{label}</div>
+      <div className="stat-value">
         {value}
-        {unit && (
-          <span className="text-base ml-1 text-[--text-secondary]">{unit}</span>
-        )}
+        {unit && <span className="stat-unit">{unit}</span>}
       </div>
     </div>
   );

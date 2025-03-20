@@ -2,8 +2,8 @@ import "./globals.css";
 import { WagmiProvider } from "./components/providers/WagmiProvider";
 
 export const metadata = {
-  title: "每日签到",
-  description: "连续签到获得更多积分",
+  title: "Daily Check-in | Web3 Rewards",
+  description: "Earn points for Web3 benefits through daily check-ins",
 };
 
 // Base URL - replace with your deployed URL
@@ -13,6 +13,8 @@ const baseUrl =
 export const viewport = {
   width: "device-width",
   initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -21,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="zh">
+    <html lang="en">
       <head>
         {/* Frame metadata */}
         <meta property="fc:frame" content="vNext" />
@@ -30,7 +32,7 @@ export default function RootLayout({
         <meta property="fc:frame:button:1:action" content="post" />
         <meta property="fc:frame:post_url" content={`${baseUrl}/api/frame`} />
         <link
-          href="https://fonts.cdnfonts.com/css/sf-pro-display"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
       </head>

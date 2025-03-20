@@ -14,25 +14,16 @@ export function StatsDisplay() {
 
   const stats = [
     {
-      label: "连续签到",
-      value: userInfo?.consecutiveCheckIns.toString() || "0",
-      unit: "天",
-    },
-    {
-      label: "总积分",
-      value: userInfo?.totalPoints.toString() || "0",
-      unit: "分",
-    },
-    {
-      label: "总签到",
+      label: "Total Days",
       value: userInfo?.totalCheckIns.toString() || "0",
-      unit: "次",
     },
     {
-      label: "上次签到",
-      value: userInfo?.lastCheckIn
-        ? new Date(Number(userInfo.lastCheckIn) * 1000).toLocaleDateString()
-        : "-",
+      label: "Today's Points",
+      value: "+100",
+    },
+    {
+      label: "Streak Bonus",
+      value: Number(userInfo?.consecutiveCheckIns || 0) >= 3 ? "+50" : "+0",
     },
   ];
 
@@ -43,7 +34,6 @@ export function StatsDisplay() {
           key={stat.label}
           label={stat.label}
           value={stat.value}
-          unit={stat.unit}
           isLoading={isLoading}
         />
       ))}
