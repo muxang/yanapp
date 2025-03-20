@@ -1,42 +1,59 @@
 "use client";
 
-import { useUserInfo } from "../hooks/useContract";
+import { useUserInfo, useHasCheckedInToday } from "../hooks/useContract";
 import { useAccount } from "wagmi";
 import { StatsCard } from "./StatsCard";
+import { useEffect, useState } from "react";
 
 export function StatsDisplay() {
   const { address } = useAccount();
   const { userInfo, isLoading } = useUserInfo();
+  const { isHasCheckedInToday } = useHasCheckedInToday();
+  const [streakBonus, setStreakBonus] = useState("0");
+  const [dailyPoints, setDailyPoints] = useState("0");
+
+  useEffect(() => {
+    // 今日积分计算逻辑
+    if (isHasCheckedInToday) {
+      // 如果今天已经签到
+      setDailyPoints("100");
+
+      // 计算连续签到奖励
+      const consecutiveDays = Number(userInfo?.consecutiveCheckIns || 0);
+      if (consecutiveDays >= 1) {
+        setStreakBonus(`+${10 * consecutiveDays}`);
+      } else {
+        setStreakBonus("+0");
+      }
+    } else {
+      // 今天未签到
+      setDailyPoints("0");
+      setStreakBonus("+0");
+    }
+  }, [userInfo, isHasCheckedInToday]);
 
   if (!address) {
     return null;
   }
 
-  const stats = [
-    {
-      label: "Total Days",
-      value: userInfo?.totalCheckIns.toString() || "0",
-    },
-    {
-      label: "Today's Points",
-      value: "+100",
-    },
-    {
-      label: "Streak Bonus",
-      value: Number(userInfo?.consecutiveCheckIns || 0) >= 3 ? "+50" : "+0",
-    },
-  ];
-
   return (
     <div className="stats-grid animate-slide-up">
-      {stats.map((stat) => (
-        <StatsCard
-          key={stat.label}
-          label={stat.label}
-          value={stat.value}
-          isLoading={isLoading}
-        />
-      ))}
+      <StatsCard
+        label="Total Days"
+        value={userInfo?.totalCheckIns.toString() || "0"}
+        isLoading={isLoading}
+      />
+      <StatsCard
+        label="Total Points"
+        value={userInfo?.totalPoints.toString() || "0"}
+        isLoading={isLoading}
+      />
+      <StatsCard
+        label="Streak"
+        value={userInfo?.consecutiveCheckIns.toString() || "0"}
+        unit="days"
+        isLoading={isLoading}
+      />
     </div>
   );
 }

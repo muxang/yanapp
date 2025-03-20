@@ -45,8 +45,8 @@ body {
   padding: 24px 16px 32px;
   margin: 0 -16px 16px;
   position: relative;
-  border-bottom-left-radius: 16px;
-  border-bottom-right-radius: 16px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
 .header-title {
@@ -377,7 +377,8 @@ body {
   width: auto;
   max-width: 100%;
   margin: 0 -16px 16px;
-  padding-bottom: 24px;
+  padding-bottom: 16px;
+  padding-top: 16px;
 }
 
 .menu-item {
@@ -496,7 +497,45 @@ body {
   margin-bottom: 16px;
 }
 
-/* Animations */
+.reward-card {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.reward-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.reward-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.reward-description {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.reward-points {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+
+.reward-button {
+  width: 100%;
+}
+
 .animate-fade-in {
   animation: fadeIn 0.5s ease-in;
 }
@@ -529,28 +568,16 @@ body {
   to { transform: rotate(360deg); }
 }
 
-/* Add content padding to push content above navbar */
 .content-padding {
   padding-bottom: 84px;
 }
 
-/* Reward cards styling */
-.reward-card {
-  transition: transform 0.2s, box-shadow 0.2s;
+.notification-center {
+  display: flex;
+  justify-content: center;
+  margin: 24px auto;
 }
 
-.reward-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-/* Add style for reward button */
-.reward-card .button-secondary {
-  padding: 6px 12px;
-  font-size: 14px;
-}
-
-/* Notification toast */
 .notification-toast {
   position: fixed;
   bottom: 80px;
