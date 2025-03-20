@@ -21,21 +21,18 @@ export default function RewardsPage() {
       id: 1,
       title: "NFT Collection Access",
       description: "Get early access to our exclusive NFT collection drops",
-      points: 500,
       available: true,
     },
     {
       id: 2,
       title: "Whitelist Spot",
       description: "Secure a whitelist spot for upcoming token launches",
-      points: 1000,
       available: true,
     },
     {
       id: 3,
       title: "DAO Voting Power",
       description: "Earn voting rights in our community governance",
-      points: 1500,
       available: true,
     },
   ];
@@ -97,28 +94,15 @@ export default function RewardsPage() {
                         d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"
                       />
                     </svg>
-                    {reward.points} points
+                    Points required
                   </div>
                   <button
                     className={`button-secondary reward-button ${
-                      userInfo?.totalPoints &&
-                      Number(userInfo.totalPoints) >= reward.points &&
-                      reward.available
-                        ? ""
-                        : "button-disabled"
+                      reward.available ? "" : "button-disabled"
                     }`}
-                    disabled={
-                      !userInfo?.totalPoints ||
-                      Number(userInfo.totalPoints) < reward.points ||
-                      !reward.available
-                    }
+                    disabled={!reward.available}
                   >
-                    {userInfo?.totalPoints &&
-                    Number(userInfo.totalPoints) >= reward.points
-                      ? "Redeem"
-                      : `Need ${
-                          reward.points - (Number(userInfo?.totalPoints) || 0)
-                        } more`}
+                    Coming Soon
                   </button>
                 </div>
               ))}
@@ -161,7 +145,7 @@ export default function RewardsPage() {
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
               <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
             </svg>
-            Get Notified When New Rewards Launch
+            Get Notified
           </button>
         </div>
 

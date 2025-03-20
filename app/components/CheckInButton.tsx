@@ -98,22 +98,10 @@ export const CheckInButton = () => {
           </svg>
           Already Checked In Today
         </button>
-        <div className="text-sm text-center mt-2 text-gray-500 flex items-center justify-center">
-          <svg
-            className="w-4 h-4 mr-1"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <polyline points="12 6 12 12 16 14" />
-          </svg>
-          <span>
-            Next check-in available in{" "}
-            <span className="font-medium text-primary">
-              {formatTimeRemaining()}
-            </span>
+        <div className="text-sm text-center mt-2 text-gray-500">
+          Next check-in available in{" "}
+          <span className="font-medium text-primary">
+            {formatTimeRemaining()}
           </span>
         </div>
       </div>
