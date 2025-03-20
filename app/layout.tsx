@@ -1,27 +1,44 @@
+import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
-import { WagmiProvider } from "./components/providers/WagmiProvider";
+import { Providers } from "./providers";
 
-export const metadata = {
-  title: "Daily Check-in | MWGA Rewards",
-  description: "Earn points for MWGA benefits through daily check-ins",
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "WrapAI | Web3 AI Points System",
+  description:
+    "Earn points through daily check-ins and redeem for exclusive Web3 rewards",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-icon.png",
+  },
+  manifest: "/manifest.json",
+  openGraph: {
+    title: "WrapAI | Web3 AI Points System",
+    description:
+      "Earn points through daily check-ins and redeem for exclusive Web3 rewards",
+    images: ["/og-image.png"],
+    type: "website",
+  },
 };
 
 // Base URL - replace with your deployed URL
-const baseUrl =
-  process.env.NEXT_PUBLIC_BASE_URL || "https://wrapcast.vercel.app";
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://wrapai.app";
 
-export const viewport = {
+export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  themeColor: "#4F6AF6",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="en">
       <head>
@@ -44,8 +61,8 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body>
-        <WagmiProvider>{children}</WagmiProvider>
+      <body className={inter.className}>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

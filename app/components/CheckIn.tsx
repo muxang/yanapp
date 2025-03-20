@@ -26,7 +26,6 @@ export default function CheckIn() {
   const renderStreakIndicators = () => {
     const consecutiveDays = Number(userInfo?.consecutiveCheckIns || 0);
 
-    // Display all 7 days without any progress bar element
     return (
       <div className="check-in-days">
         {[1, 2, 3, 4, 5, 6, 7].map((day) => (

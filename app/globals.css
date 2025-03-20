@@ -28,6 +28,7 @@ body {
   min-height: 100vh;
   padding: 0;
   margin: 0;
+  padding-bottom: 10px; /* 增加底部填充，为导航栏留出空间 */
 }
 
 .app-container {
@@ -37,6 +38,7 @@ body {
   background-color: var(--background);
   position: relative;
   padding: 0 16px;
+  padding-bottom: 10px; /* 增加底部填充，确保内容不被导航栏遮挡 */
 }
 
 .page-header {
@@ -128,18 +130,22 @@ body {
 }
 
 /* Check-in indicator styles */
-/* 签到指示器样式 */
 .check-in-days {
   display: flex;
-  gap: 14px;
+  gap: 5px;
   justify-content: center;
   margin-bottom: 2rem;
   flex-wrap: nowrap;
-  padding: 0 20px;
-  margin-left: 10px;
-  margin-right: 10px;
-  width: auto;
-  min-width: fit-content;
+  margin-left: 0;
+  margin-right: 0;
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+  position: relative; /* 为bonus标签提供定位上下文 */
+  padding-top: 10px; /* 为bonus标签提供足够的上方空间 */
+}
+
+.check-in-days::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
 }
 
 .day-circle {
@@ -152,7 +158,15 @@ body {
   font-weight: 500;
   position: relative;
   border: 2px solid white;
+  flex-shrink: 0;
+  background-color: #E5E7EB;
+  color: #6B7280;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  font-size: 16px;
+  line-height: 1;
+  margin-top: 8px; /* 为顶部的bonus标签留出空间 */
 }
+
 .day-active {
   background-color: #4F6AF6;
   color: white;
@@ -166,20 +180,24 @@ body {
 
 .day-bonus {
   position: absolute;
-  top: -16px;
+  top: -10px; /* 调整位置使其更贴近圆圈但不重叠 */
   left: 50%;
   transform: translateX(-50%);
   background-color: #FFA500;
   color: white;
-  font-size: 0.75rem;
-  padding: 2px 8px;
+  font-size: 12px; /* 调小字体确保在所有设备上更好地显示 */
+  padding: 1px 6px;
   border-radius: 9999px;
   font-weight: bold;
-  height: 20px;
+  height: 18px;
   line-height: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
+  min-width: 24px;
+  z-index: 10;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .day-circle.day-special {
@@ -592,6 +610,11 @@ body {
   padding-bottom: 84px;
 }
 
+main {
+  padding-bottom: 80px;
+  min-height: calc(100vh - var(--header-height) - 84px);
+}
+
 .notification-center {
   display: flex;
   justify-content: center;
@@ -721,4 +744,160 @@ body {
 .check-in-icon {
   width: 24px;
   height: 24px;
+}
+
+/* Splash Screen Styles */
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #eeccff 0%, #4F6AF6 100%);
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.5s ease-out;
+}
+
+.splash-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+}
+
+.logo-container {
+  animation: float 3s ease-in-out infinite;
+}
+
+.logo-wrapper {
+  text-align: center;
+}
+
+.brand-name {
+  font-size: 48px;
+  font-weight: 800;
+  color: white;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  margin: 0;
+  background: linear-gradient(90deg, #ffffff, #edf2ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 2s linear infinite;
+  background-size: 200% 100%;
+}
+
+.brand-tagline {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+.progress-container {
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: white;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 14px;
+  color: white;
+  font-weight: 500;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.splash-exit {
+  opacity: 0;
+}
+
+/* Features Grid Styles */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.feature-item {
+  background-color: white;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.feature-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.feature-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.feature-title {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.feature-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.4;
 }

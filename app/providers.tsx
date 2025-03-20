@@ -1,14 +1,7 @@
 "use client";
 
-import dynamic from "next/dynamic";
-
-const WagmiProvider = dynamic(
-  () =>
-    import("./components/providers/WagmiProvider").then(
-      (mod) => mod.WagmiProvider
-    ),
-  { ssr: false }
-);
+import React from "react";
+import { WagmiProvider } from "./components/providers/WagmiProvider";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return <WagmiProvider>{children}</WagmiProvider>;

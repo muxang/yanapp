@@ -3,76 +3,131 @@ import { ImageResponse } from "next/og";
 export const runtime = "edge";
 
 export async function GET() {
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "100%",
-          height: "100%",
-          background: "linear-gradient(to bottom, #1e293b, #0f172a)",
-          padding: "40px",
-          color: "white",
-          fontFamily: "Inter, sans-serif",
-        }}
-      >
+  try {
+    return new ImageResponse(
+      (
         <div
           style={{
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            textAlign: "center",
             width: "100%",
+            height: "100%",
+            backgroundColor: "white",
+            padding: "40px 20px",
+            borderRadius: "16px",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.08)",
           }}
         >
-          <h1
+          {/* Header */}
+          <div
             style={{
               fontSize: "48px",
-              margin: "0 0 20px",
               fontWeight: "bold",
-              background: "linear-gradient(to right, #2563eb, #4f46e5)",
-              backgroundClip: "text",
-              color: "transparent",
+              color: "#333333",
+              marginBottom: "40px",
             }}
           >
             Daily Check-in
-          </h1>
-          <div
-            style={{
-              fontSize: "24px",
-              marginBottom: "40px",
-              maxWidth: "80%",
-              textAlign: "center",
-            }}
-          >
-            Check in daily to earn points and build your streak for MWGA rewards
           </div>
 
+          {/* Check-in Days */}
           <div
             style={{
               display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              padding: "16px 32px",
-              background: "linear-gradient(to right, #2563eb, #4f46e5)",
-              borderRadius: "12px",
-              fontSize: "20px",
-              fontWeight: "bold",
-              marginTop: "20px",
+              gap: "16px",
+              marginBottom: "40px",
+              position: "relative",
+              paddingTop: "20px",
             }}
           >
+            {[1, 2, 3, 4, 5, 6, 7].map((day) => (
+              <div
+                key={day}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "60px",
+                  height: "60px",
+                  borderRadius: "50%",
+                  backgroundColor:
+                    day === 3 || day === 6 ? "#4F6AF6" : "#E5E7EB",
+                  color: day === 3 || day === 6 ? "white" : "#6B7280",
+                  fontWeight: "bold",
+                  fontSize: "24px",
+                  position: "relative",
+                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
+                }}
+              >
+                {day}
+                {day % 3 === 0 && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "-15px",
+                      backgroundColor: "#FFA500",
+                      color: "white",
+                      fontSize: "14px",
+                      padding: "2px 8px",
+                      borderRadius: "9999px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    +{day * 5}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Button */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "16px 32px",
+              backgroundColor: "#4F6AF6",
+              color: "white",
+              borderRadius: "40px",
+              fontWeight: "bold",
+              fontSize: "24px",
+              marginBottom: "40px",
+              boxShadow: "0 4px 12px rgba(79, 106, 246, 0.3)",
+            }}
+          >
+            <div style={{ marginRight: "8px" }}>✓</div>
             Check In Now
           </div>
+
+          {/* Info */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "8px",
+              fontSize: "20px",
+              color: "#666666",
+              textAlign: "center",
+            }}
+          >
+            <div>Check in daily to earn 10 base points</div>
+            <div>Earn streak bonus: day × 5 points</div>
+            <div>Redeem points for WrapAI rewards</div>
+          </div>
         </div>
-      </div>
-    ),
-    {
-      width: 1200,
-      height: 630,
-    }
-  );
+      ),
+      {
+        width: 1200,
+        height: 630,
+      }
+    );
+  } catch (error: any) {
+    console.log(`${error.message}`);
+    return new Response(`Failed to generate the image`, {
+      status: 500,
+    });
+  }
 }
