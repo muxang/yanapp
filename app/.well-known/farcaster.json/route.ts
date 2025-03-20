@@ -10,7 +10,7 @@ export async function GET() {
         "MHg3NGNkOTc2N2NiZGFiMjczZWRjY2UyZTIzNWEwMjYxMzgzNTdjZjI5MWEwY2Q3MGUwOGQ2N2JiMzk3ZGU0ODMwNjRiZTczYzRiOGI3OTEyNGI5NmFjMzFmNzZkZTg2ZThiMjM0MDYyN2E1YmJhOWIzMjJlZDc4M2ZiZjZhMDY1ZTFi",
     },
     frame: {
-      version: "1",
+      version: "1.1",
       name: "WrapAI",
       iconUrl: "https://wrapai.app/logo.svg",
       homeUrl: "https://wrapai.app",

@@ -11,8 +11,16 @@ export default function RewardsPage() {
   const [showNotification, setShowNotification] = useState(false);
 
   const handleNotification = () => {
-    setShowNotification(true);
-    setTimeout(() => setShowNotification(false), 3000);
+    try {
+      // Call Farcaster SDK to view profile with ID 567606
+      if (typeof window !== "undefined" && window.parent !== window) {
+        import("@farcaster/frame-sdk").then((sdk) => {
+          sdk.default.actions.viewProfile({ fid: 567606 });
+        });
+      }
+    } catch (error) {
+      console.error("Failed to view profile:", error);
+    }
   };
 
   // 定义可用奖励

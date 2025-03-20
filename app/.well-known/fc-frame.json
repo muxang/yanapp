@@ -1,0 +1,21 @@
+{
+  "version": "vNext",
+  "image": {
+    "aspectRatio": "1.91:1",
+    "url": "https://wrapai.app/api/frame-image"
+  },
+  "buttons": [
+    {
+      "label": "Check In",
+      "action": "post",
+      "target": "https://wrapai.app/api/frame-check-in"
+    }
+  ],
+  "frames": [
+    {
+      "id": "check-in-app",
+      "url": "https://wrapai.app"
+    }
+  ],
+  "permissions": ["wallets"]
+}

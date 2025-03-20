@@ -5,7 +5,11 @@ import { Providers } from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
+// Base URL - replace with your deployed URL
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://wrapai.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(baseUrl),
   title: "WrapAI | Web3 AI Points System",
   description:
     "Earn points through daily check-ins and redeem for exclusive Web3 rewards",
@@ -22,9 +26,6 @@ export const metadata: Metadata = {
     type: "website",
   },
 };
-
-// Base URL - replace with your deployed URL
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://wrapai.app";
 
 export const viewport: Viewport = {
   width: "device-width",

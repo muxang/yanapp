@@ -6,6 +6,14 @@ const nextConfig = {
     return config;
   },
   output: "standalone",
+  async rewrites() {
+    return [
+      {
+        source: "/.well-known/:path*",
+        destination: "/.well-known/:path*",
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
