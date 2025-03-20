@@ -127,7 +127,7 @@ body {
   margin-top: 0.25rem;
 }
 
-/* 签到指示器样式 */
+/* Check-in indicator styles */
 .check-in-days {
   display: flex;
   gap: 12px;
@@ -206,7 +206,7 @@ body {
   to { opacity: 1; }
 }
 
-/* 已签到按钮样式 */
+/* Checked-in button styles */
 .already-checked-in {
   display: flex;
   align-items: center;
@@ -682,7 +682,7 @@ body {
   box-shadow: 0 2px 4px rgba(78, 124, 255, 0.25);
 }
 
-/* 签到按钮样式 */
+/* Check-in button styles */
 .check-in-button {
   display: flex;
   align-items: center;
