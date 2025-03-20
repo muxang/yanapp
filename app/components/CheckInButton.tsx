@@ -113,23 +113,26 @@ export const CheckInButton = () => {
       {error && <div className="error-text">{error}</div>}
 
       {success ? (
-        <div className="success-text flex flex-col items-center justify-center gap-2 p-4">
-          <div className="flex items-center justify-center mb-2">
+        <div className="success-text animate-fade-in flex flex-col items-center justify-center gap-2">
+          <div className="flex items-center">
             <svg
-              className="w-8 h-8 text-green-500"
+              className="w-5 h-5 text-success mr-1"
               viewBox="0 0 24 24"
               fill="currentColor"
             >
               <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
             </svg>
-          </div>
-          <div className="text-center text-green-500 text-lg font-medium">
             Check-in successful!
           </div>
           {earnedPoints && (
             <div className="text-center">
-              <span className="text-green-500">+{earnedPoints} points</span>{" "}
-              earned
+              <span className="font-bold">+{earnedPoints} points</span> earned
+              {isConsecutive && (
+                <div className="text-xs text-primary">
+                  Including {consecutiveDays * 5} bonus points for day{" "}
+                  {consecutiveDays} streak!
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -138,29 +141,20 @@ export const CheckInButton = () => {
           <button
             onClick={handleCheckIn}
             disabled={!canCheckIn || isLoading}
-            className={`button-primary w-full ${
-              isLoading ? "button-loading" : ""
-            }`}
+            className="check-in-button"
           >
             <svg
-              className="w-5 h-5 mr-1"
+              className="check-in-icon"
               viewBox="0 0 24 24"
               fill="currentColor"
             >
-              <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
             </svg>
-            {!isLoading && "Check In Now"}
+            {!isLoading ? "Check In Now" : "Loading..."}
           </button>
 
           {isEligibleForBonus && (
             <div className="text-xs text-center mt-2 text-primary">
-              <svg
-                className="w-4 h-4 inline-block mr-1"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 10c-.83 3.05-3.23 5-6.24 5-1.35 0-2.49-.31-3.43-.94l.64-1.8c.65.45 1.48.74 2.5.74 1.63 0 3.1-.79 3.97-2h-5.49c.01-.2.01-.41 0-.61-.01-.2-.01-.41 0-.61h5.49c-.87-1.21-2.34-2-3.97-2-1.02 0-1.85.29-2.5.74l-.64-1.8C9.5 7.31 10.64 7 11.99 7c3.01 0 5.4 1.95 6.24 5h-2.4c.11.2.21.4.29.61.08.2.15.41.19.61h2.4z" />
-              </svg>
               Day {consecutiveDays + 1} streak bonus: +{expectedBonusPoints}{" "}
               points
             </div>
@@ -170,19 +164,6 @@ export const CheckInButton = () => {
 
       {!canCheckIn && isConnected && userInfo && !success && (
         <div className="text-sm text-center mt-2 text-gray-500">
-          <svg
-            className="w-4 h-4 inline-block mr-1"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
           Already checked in today, come back tomorrow!
         </div>
       )}

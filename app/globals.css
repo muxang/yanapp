@@ -127,11 +127,13 @@ body {
   margin-top: 0.25rem;
 }
 
+/* 签到指示器样式 */
 .check-in-days {
   display: flex;
+  gap: 12px;
   justify-content: center;
-  gap: 8px;
-  margin: 24px 0;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
 }
 
 .day-circle {
@@ -141,30 +143,31 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
+  font-weight: 500;
   position: relative;
+  border: 2px solid white;
 }
 
 .day-active {
-  background-color: var(--primary);
+  background-color: #4F6AF6;
   color: white;
 }
 
 .day-inactive {
-  border: 2px solid var(--border-color);
-  color: var(--text-light);
+  background-color: #E5E7EB;
+  color: #6B7280;
 }
 
 .day-bonus {
   position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: var(--secondary);
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #FFA500;
   color: white;
-  border-radius: 8px;
-  padding: 2px 4px;
-  font-size: 10px;
-  font-weight: 700;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 9999px;
 }
 
 .day-circle.day-special {
@@ -177,25 +180,47 @@ body {
 }
 
 .button-primary {
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 14px 28px;
-  border-radius: 50px;
-  font-weight: 600;
-  font-size: 16px;
-  box-shadow: 0 4px 12px rgba(78, 124, 255, 0.4);
-  cursor: pointer;
-  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  max-width: 200px;
+  margin: 0 auto;
 }
 
-.button-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(78, 124, 255, 0.5);
+.success-text {
+  padding: 1rem;
+  text-align: center;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 已签到按钮样式 */
+.already-checked-in {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 200px;
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
+  background-color: #E5E7EB;
+  color: #6B7280;
+  border-radius: 9999px;
+  font-weight: 500;
+  cursor: not-allowed;
+}
+
+.error-text {
+  color: #EF4444;
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
 .button-primary:disabled {
@@ -315,20 +340,6 @@ body {
 
 .nav-item.active .nav-icon {
   fill: currentColor;
-}
-
-.error-text {
-  color: var(--error);
-  font-size: 14px;
-  margin-top: 8px;
-  text-align: center;
-}
-
-.success-text {
-  color: var(--success);
-  font-size: 14px;
-  margin-top: 8px;
-  text-align: center;
 }
 
 .points-badge {
@@ -496,21 +507,6 @@ body {
   margin-bottom: 16px;
 }
 
-.already-checked-in {
-  background-color: #e0e0e0;
-  color: #757575;
-  border: none;
-  padding: 14px 28px;
-  border-radius: 50px;
-  font-weight: 600;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: not-allowed;
-  width: 100%;
-}
-
 .last-check-in {
   font-size: 14px;
   color: var(--text-secondary);
@@ -557,21 +553,12 @@ body {
   width: 100%;
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.5s ease-in;
-}
-
 .animate-slide-up {
   animation: slideUp 0.5s ease-out;
 }
 
 .animate-pulse {
   animation: pulse 2s infinite;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
 
 @keyframes slideUp {
@@ -688,4 +675,38 @@ body {
 .notification-button-highlighted:active {
   transform: translateY(0);
   box-shadow: 0 2px 4px rgba(78, 124, 255, 0.25);
+}
+
+/* 签到按钮样式 */
+.check-in-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #4F6AF6;
+  color: white;
+  font-weight: 500;
+  font-size: 16px;
+  border: none;
+  border-radius: 9999px;
+  padding: 12px 24px;
+  width: 100%;
+  max-width: 240px;
+  margin: 0 auto;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.check-in-button:hover {
+  background-color: #4059DC;
+}
+
+.check-in-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.check-in-icon {
+  width: 24px;
+  height: 24px;
 }
