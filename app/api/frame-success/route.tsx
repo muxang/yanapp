@@ -1,63 +1,128 @@
-import { NextRequest, NextResponse } from "next/server";
 import { ImageResponse } from "next/og";
-import React from "react";
+import { NextRequest } from "next/server";
 
 export const runtime = "edge";
 
 export async function GET(req: NextRequest) {
-  try {
-    // 获取URL参数
-    const { searchParams } = new URL(req.url);
-    const points = searchParams.get("points") || "10";
+  // 获取URL参数
+  const searchParams = req.nextUrl.searchParams;
+  const points = searchParams.get("points") || "10";
+  const streak = searchParams.get("streak") || "1";
+  const fid = searchParams.get("fid") || "unknown";
 
-    // 创建一个1200x630的图像
-    return new ImageResponse(
-      (
+  // 可以尝试根据FID获取更多用户信息
+  // 这里简单地使用FID作为标识符
+  const userInfo = `FID: ${fid}`;
+
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+          height: "100%",
+          background: "linear-gradient(to bottom, #065f46, #064e3b)",
+          padding: "40px",
+          color: "white",
+          fontFamily: "Inter, sans-serif",
+        }}
+      >
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            width: "100%",
-            height: "100%",
-            backgroundColor: "#059669", // 绿色背景
-            color: "white",
-            padding: "40px",
             alignItems: "center",
             justifyContent: "center",
             textAlign: "center",
-            fontFamily: "sans-serif",
+            width: "100%",
           }}
         >
           <div
             style={{
-              fontSize: "72px",
+              fontSize: "40px",
               fontWeight: "bold",
               marginBottom: "20px",
+              color: "#4ade80",
             }}
           >
-            Check-in Successful!
+            Check-in Success!
           </div>
-          <div style={{ fontSize: "48px", marginBottom: "40px" }}>
-            You earned{" "}
-            <span style={{ fontWeight: "bold" }}>{points} points</span>
-          </div>
+
           <div
-            style={{ display: "flex", alignItems: "center", fontSize: "36px" }}
+            style={{
+              fontSize: "22px",
+              marginBottom: "10px",
+              maxWidth: "80%",
+              textAlign: "center",
+            }}
           >
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="white">
-              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-            </svg>
-            <span style={{ marginLeft: "12px" }}>Keep your streak going!</span>
+            {userInfo}
+          </div>
+
+          <div
+            style={{
+              fontSize: "24px",
+              marginBottom: "40px",
+              maxWidth: "80%",
+              textAlign: "center",
+            }}
+          >
+            You earned {points} points
+            {Number(streak) > 1 ? ` with a ${streak}-day streak` : ""}!
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "20px",
+              marginTop: "20px",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                padding: "20px",
+                background: "rgba(255, 255, 255, 0.1)",
+                borderRadius: "12px",
+              }}
+            >
+              <div style={{ fontSize: "36px", fontWeight: "bold" }}>
+                {points}
+              </div>
+              <div style={{ fontSize: "18px" }}>Points Earned</div>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                padding: "20px",
+                background: "rgba(255, 255, 255, 0.1)",
+                borderRadius: "12px",
+              }}
+            >
+              <div style={{ fontSize: "36px", fontWeight: "bold" }}>
+                {streak}
+              </div>
+              <div style={{ fontSize: "18px" }}>
+                Day{Number(streak) > 1 ? "s" : ""} Streak
+              </div>
+            </div>
           </div>
         </div>
-      ),
-      {
-        width: 1200,
-        height: 630,
-      }
-    );
-  } catch (e) {
-    console.error(e);
-    return new NextResponse("Failed to generate image", { status: 500 });
-  }
+      </div>
+    ),
+    {
+      width: 1200,
+      height: 630,
+    }
+  );
 }

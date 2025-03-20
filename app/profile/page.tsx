@@ -4,6 +4,25 @@ import { useAccount } from "wagmi";
 import { useUserInfo } from "../hooks/useContract";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import sdk from "@farcaster/frame-sdk";
+
+// 定义FrameContext接口
+interface UserContext {
+  fid: number;
+  username?: string;
+  displayName?: string;
+  pfpUrl?: string;
+  pfp?: string;
+  location?: {
+    placeId: string;
+    description: string;
+  };
+}
+
+interface FrameContext {
+  user?: UserContext;
+  isAuthenticated?: boolean;
+}
 
 export default function ProfilePage() {
   const { isConnected, address } = useAccount();
@@ -12,32 +31,70 @@ export default function ProfilePage() {
     "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
   );
   const [userName, setUserName] = useState<string>("User");
+  const [userFid, setUserFid] = useState<number | null>(null);
   const [showToast, setShowToast] = useState<string>("");
+  const [isFrameLoaded, setIsFrameLoaded] = useState(false);
+  const [frameContext, setFrameContext] = useState<FrameContext | null>(null);
 
-  // 获取Farcaster用户信息（简化处理，直接使用状态变量）
-  // 实际项目中应根据SDK文档调整
+  // 初始化Frame SDK并获取Farcaster用户信息
   useEffect(() => {
-    // 防止在服务器端运行
-    if (typeof window !== "undefined") {
+    async function initFrameSDK() {
       try {
-        // 此处简化处理，实际应从Farcaster API获取
-        // 由于SDK API变更，简化为使用query参数或local storage
-        const params = new URLSearchParams(window.location.search);
-        const fid = params.get("fid");
+        // 加载SDK
+        await sdk.actions.ready();
+        setIsFrameLoaded(true);
 
-        if (fid) {
-          // 如果有FID参数，可以从API获取头像和名称
-          // 这里仅做示例，实际集成时应使用SDK的方法
-          const localImage = localStorage.getItem("farcaster_pfp");
-          const localName = localStorage.getItem("farcaster_name");
+        // 获取用户上下文
+        const context = await sdk.context;
+        setFrameContext(context);
+        console.log("Frame context:", context);
 
-          if (localImage) setProfileImage(localImage);
-          if (localName) setUserName(localName);
+        // 从context获取用户信息
+        if (context?.user) {
+          // 尝试获取头像 - 使用类型断言绕过类型检查
+          if (context.user.pfpUrl) {
+            setProfileImage(context.user.pfpUrl);
+          } else if ((context.user as any).pfp) {
+            setProfileImage((context.user as any).pfp);
+          }
+
+          if (context.user.displayName) {
+            setUserName(context.user.displayName);
+          } else if (context.user.username) {
+            setUserName(`@${context.user.username}`);
+          }
+
+          if (context.user.fid) {
+            setUserFid(context.user.fid);
+          }
         }
       } catch (error) {
-        console.error("Error fetching profile:", error);
+        console.error("Failed to initialize Frame SDK:", error);
+
+        // 备用方案：从URL参数获取
+        if (typeof window !== "undefined") {
+          try {
+            const params = new URLSearchParams(window.location.search);
+            const fid = params.get("fid");
+
+            if (fid) {
+              // 如果有FID参数，可以从API获取头像和名称
+              // 这里仅做示例，实际集成时应使用SDK的方法
+              const localImage = localStorage.getItem("farcaster_pfp");
+              const localName = localStorage.getItem("farcaster_name");
+
+              if (localImage) setProfileImage(localImage);
+              if (localName) setUserName(localName);
+              setUserFid(parseInt(fid));
+            }
+          } catch (error) {
+            console.error("Error fetching profile from params:", error);
+          }
+        }
       }
     }
+
+    initFrameSDK();
   }, []);
 
   const handleMenuClick = (feature: string) => {
@@ -57,7 +114,7 @@ export default function ProfilePage() {
         <div className="profile-card">
           <img src={profileImage} alt="Profile" className="profile-avatar" />
           <h1 className="profile-name">{userName}</h1>
-          <p className="profile-title">MWGA Enthusiast</p>
+          {userFid && <p className="profile-subtitle">FID: {userFid}</p>}
           <div className="points-badge mx-auto">
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
@@ -70,7 +127,7 @@ export default function ProfilePage() {
         </div>
       </header>
 
-      <main>
+      <main className="page-content">
         {/* Stats Card */}
         <div className="card">
           <div className="stats-grid">
@@ -96,7 +153,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Points & Rewards */}
-        <div className="card">
+        <div className="card mt-4">
           <h2 className="section-title mb-2">Points & Rewards</h2>
           <div>
             <div
@@ -188,7 +245,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Settings & Support */}
-        <div className="card">
+        <div className="card mt-4">
           <h2 className="section-title mb-2">Settings & Support</h2>
           <div>
             <div

@@ -1,99 +1,128 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// 简单验证函数，实际生产环境需要更健壮的验证
-function validateFrameMessage(body: any) {
-  // 检查必要字段
-  if (!body.untrustedData || !body.untrustedData.fid) {
-    return { isValid: false, message: null };
-  }
-
-  // 返回处理后的消息结构
-  return {
-    isValid: true,
-    message: {
-      fid: body.untrustedData.fid,
-      buttonIndex: body.untrustedData.buttonIndex || 0,
-      inputText: body.untrustedData.inputText || "",
-      state: body.untrustedData.state || "",
-    },
+// Farcaster Frame消息的结构接口
+interface FrameMessage {
+  untrustedData: {
+    fid: number;
+    url: string;
+    messageHash: string;
+    timestamp: number;
+    network: number;
+    buttonIndex: number;
+    inputText?: string;
+    castId: {
+      fid: number;
+      hash: string;
+    };
+  };
+  trustedData?: {
+    messageBytes: string;
   };
 }
 
-export async function POST(req: NextRequest) {
+// Farcaster用户上下文接口
+interface UserContext {
+  fid: number;
+  username?: string;
+  displayName?: string;
+  pfp?: string;
+  bio?: string;
+  location?: {
+    placeId: string;
+    description: string;
+  };
+}
+
+// 验证Frame消息
+function validateFrameMessage(body: any): boolean {
+  // 验证必要的字段是否存在
+  if (!body || !body.untrustedData || !body.untrustedData.fid) {
+    return false;
+  }
+  return true;
+}
+
+export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
-    // 从请求中获取帧数据
-    const body = await req.json();
+    const body = (await req.json()) as FrameMessage;
 
-    // 验证帧消息
-    const { isValid, message } = validateFrameMessage(body);
-    if (!isValid || !message) {
-      return new NextResponse("Invalid frame message", { status: 400 });
-    }
-
-    // 提取用户信息
-    const { fid, buttonIndex } = message;
-
-    // 获取之前存储的状态
-    const frameState = message.state
-      ? JSON.parse(Buffer.from(message.state, "base64").toString())
-      : {};
-    console.log(`User ${fid} clicked button ${buttonIndex}`, frameState);
-
-    // 处理签到逻辑
-    // 注意：这里只是模拟，实际应用中你需要连接到合约进行真正的签到
-    const success = true; // 假设签到成功
-    const pointsEarned = 10; // 假设获得10积分
-
-    // 返回签到结果
-    if (success) {
+    // 验证Frame消息
+    if (!validateFrameMessage(body)) {
       return new NextResponse(
-        `<!DOCTYPE html>
+        `
         <html>
           <head>
             <meta property="fc:frame" content="vNext" />
-            <meta property="fc:frame:image" content="/api/frame-success?points=${pointsEarned}" />
-            <meta property="fc:frame:button:1" content="Open App for More" />
-            <meta property="fc:frame:button:1:action" content="link" />
-            <meta property="fc:frame:button:1:target" content="https://${req.headers.get(
-              "host"
-            )}" />
-            <meta property="og:title" content="MWGA Daily Check-in - Success!" />
-          </head>
-          <body>
-            <p>Check-in successful! You earned ${pointsEarned} points.</p>
-          </body>
-        </html>`,
-        {
-          headers: {
-            "Content-Type": "text/html",
-          },
-        }
-      );
-    } else {
-      return new NextResponse(
-        `<!DOCTYPE html>
-        <html>
-          <head>
-            <meta property="fc:frame" content="vNext" />
-            <meta property="fc:frame:image" content="/api/frame-error" />
+            <meta property="fc:frame:image" content="https://wrapcast.vercel.app/api/frame-image" />
             <meta property="fc:frame:button:1" content="Try Again" />
-            <meta property="fc:frame:button:1:action" content="post_url" />
-            <meta property="fc:frame:post_url" content="/api/frame-interaction" />
-            <meta property="og:title" content="MWGA Daily Check-in - Failed" />
+            <meta property="fc:frame:post_url" content="https://wrapcast.vercel.app/api/frame-check-in" />
           </head>
-          <body>
-            <p>Check-in failed. Please try again.</p>
-          </body>
-        </html>`,
+          <body>Invalid request format</body>
+        </html>
+        `,
         {
+          status: 400,
           headers: {
             "Content-Type": "text/html",
           },
         }
       );
     }
+
+    // 从untrustedData中获取用户信息
+    const { fid } = body.untrustedData;
+
+    // 尝试使用可信数据获取更多用户信息（如果有的话）
+    let username = "User";
+
+    // 模拟检查处理
+    const points = 10;
+    const streak = Math.floor(Math.random() * 10) + 1; // 模拟连续签到天数
+
+    // 在图像URL中包含用户的FID和其他相关信息
+    const imageUrl = `https://wrapcast.vercel.app/api/frame-success?points=${points}&streak=${streak}&fid=${fid}`;
+
+    // 返回带有结果的Frame，包含用户个性化信息
+    return new NextResponse(
+      `
+      <html>
+        <head>
+          <meta property="fc:frame" content="vNext" />
+          <meta property="fc:frame:image" content="${imageUrl}" />
+          <meta property="fc:frame:button:1" content="Go to App" />
+          <meta property="fc:frame:button:1:action" content="link" />
+          <meta property="fc:frame:button:1:target" content="https://wrapcast.vercel.app" />
+        </head>
+        <body>Check-in successful for FID: ${fid}!</body>
+      </html>
+      `,
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "text/html",
+        },
+      }
+    );
   } catch (error) {
-    console.error("Error processing check-in:", error);
-    return new NextResponse("Internal server error", { status: 500 });
+    console.error("Error processing frame check-in:", error);
+    return new NextResponse(
+      `
+      <html>
+        <head>
+          <meta property="fc:frame" content="vNext" />
+          <meta property="fc:frame:image" content="https://wrapcast.vercel.app/api/frame-error" />
+          <meta property="fc:frame:button:1" content="Try Again" />
+          <meta property="fc:frame:post_url" content="https://wrapcast.vercel.app/api/frame-check-in" />
+        </head>
+        <body>An error occurred</body>
+      </html>
+      `,
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "text/html",
+        },
+      }
+    );
   }
 }

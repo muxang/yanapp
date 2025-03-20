@@ -31,12 +31,14 @@ export default function RootLayout({
           property="fc:frame:image"
           content={`${baseUrl}/api/frame-image`}
         />
-        <meta property="fc:frame:button:1" content="Open Check-in App" />
-        <meta property="fc:frame:button:1:action" content="post_url" />
+        <meta property="fc:frame:button:1" content="Check In Now" />
+        <meta property="fc:frame:button:1:action" content="post" />
         <meta
           property="fc:frame:post_url"
-          content={`${baseUrl}/api/frame-interaction`}
+          content={`${baseUrl}/api/frame-check-in`}
         />
+
+        {/* 字体资源 */}
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
           rel="stylesheet"

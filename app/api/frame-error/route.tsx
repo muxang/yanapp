@@ -13,40 +13,63 @@ export async function GET(req: NextRequest) {
           style={{
             display: "flex",
             flexDirection: "column",
-            width: "100%",
-            height: "100%",
-            backgroundColor: "#DC2626", // 红色背景
-            color: "white",
-            padding: "40px",
             alignItems: "center",
             justifyContent: "center",
-            textAlign: "center",
-            fontFamily: "sans-serif",
+            width: "100%",
+            height: "100%",
+            background: "linear-gradient(to bottom, #991b1b, #7f1d1d)",
+            padding: "40px",
+            color: "white",
+            fontFamily: "Inter, sans-serif",
           }}
         >
           <div
             style={{
-              fontSize: "72px",
-              fontWeight: "bold",
-              marginBottom: "20px",
-            }}
-          >
-            Check-in Failed
-          </div>
-          <div style={{ fontSize: "36px", marginBottom: "40px" }}>
-            Something went wrong with your check-in
-          </div>
-          <div
-            style={{
               display: "flex",
-              backgroundColor: "rgba(255, 255, 255, 0.1)",
-              padding: "20px 40px",
-              borderRadius: "16px",
-              fontSize: "32px",
-              marginTop: "20px",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center",
+              width: "100%",
             }}
           >
-            Please try again
+            <div
+              style={{
+                fontSize: "40px",
+                fontWeight: "bold",
+                marginBottom: "20px",
+                color: "#fca5a5",
+              }}
+            >
+              Error Occurred
+            </div>
+
+            <div
+              style={{
+                fontSize: "24px",
+                marginBottom: "40px",
+                maxWidth: "80%",
+                textAlign: "center",
+              }}
+            >
+              Something went wrong with your check-in request
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "16px 32px",
+                background: "rgba(255, 255, 255, 0.1)",
+                borderRadius: "12px",
+                fontSize: "20px",
+                fontWeight: "bold",
+                marginTop: "20px",
+              }}
+            >
+              Try Again
+            </div>
           </div>
         </div>
       ),
