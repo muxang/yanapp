@@ -1,26 +1,15 @@
 "use client";
 
-import {
-  useCheckIn,
-  useUserInfo,
-  useHasCheckedInToday,
-} from "../hooks/useContract";
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import sdk from "@farcaster/frame-sdk";
+import { useUserInfo } from "../hooks/useContract";
+import { CheckInButton } from "./CheckInButton";
 
 export default function CheckIn() {
   const { isConnected } = useAccount();
-  const { checkIn } = useCheckIn();
-  const { userInfo, refetch } = useUserInfo();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
-  const [earnedPoints, setEarnedPoints] = useState<number | null>(null);
-  const [isConsecutive, setIsConsecutive] = useState(false);
-
-  const { isHasCheckedInToday } = useHasCheckedInToday();
+  const { userInfo } = useUserInfo();
 
   useEffect(() => {
     const initFrame = async () => {
@@ -34,54 +23,9 @@ export default function CheckIn() {
     initFrame();
   }, []);
 
-  const handleCheckIn = async () => {
-    if (!isConnected) return;
-
-    try {
-      setIsLoading(true);
-      setError(null);
-      setSuccess(false);
-
-      // 检查是否是连续签到（昨天签到过）
-      const isConsecutiveCheckIn = userInfo?.lastCheckIn
-        ? Date.now() / 1000 - Number(userInfo.lastCheckIn) <= 86400 * 2
-        : false;
-
-      // 获取连续签到天数
-      const consecutiveDays = isConsecutiveCheckIn
-        ? Number(userInfo?.consecutiveCheckIns || 0) + 1
-        : 1;
-
-      // 计算预期获得的积分 - 基础10分 + 连续签到奖励(天数 * 5)
-      const streakBonus = isConsecutiveCheckIn ? consecutiveDays * 5 : 0;
-      const expectedPoints = 10 + streakBonus;
-
-      const tx = await checkIn();
-      await sdk.actions.ready(); // 等待处理完成
-      await refetch();
-
-      setSuccess(true);
-      setEarnedPoints(expectedPoints);
-      setIsConsecutive(isConsecutiveCheckIn);
-    } catch (err) {
-      console.error("Check-in error:", err);
-      setError("Failed to check in. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // 计算连续签到天数和奖励
-  const consecutiveDays = Number(userInfo?.consecutiveCheckIns || 0);
-  const isEligibleForBonus =
-    userInfo?.lastCheckIn &&
-    Date.now() / 1000 - Number(userInfo.lastCheckIn) <= 86400 * 2;
-  const expectedBonusPoints = isEligibleForBonus
-    ? (consecutiveDays + 1) * 5
-    : 0;
-
   // 渲染连续签到指示器
   const renderStreakIndicators = () => {
+    const consecutiveDays = Number(userInfo?.consecutiveCheckIns || 0);
     const indicators = [];
     for (let i = 0; i < 7; i++) {
       const bonusPoints = i === 2 ? "+15" : i === 5 ? "+30" : null;
@@ -124,20 +68,7 @@ export default function CheckIn() {
       </p>
       {renderStreakIndicators()}
 
-      <div className="w-full">
-        <button
-          onClick={handleCheckIn}
-          disabled={isLoading || isHasCheckedInToday}
-          className={`w-full py-3 px-6 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-800 font-medium text-base flex items-center justify-center gap-2 transition-colors ${
-            isHasCheckedInToday ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-        >
-          <span role="img" aria-label="peace">
-            ✌️
-          </span>
-          Check in Now
-        </button>
-      </div>
+      <CheckInButton />
 
       <div className="mt-12 space-y-4 w-full">
         <h2 className="text-xl font-bold mb-4">How It Works</h2>
