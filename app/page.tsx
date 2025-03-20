@@ -58,38 +58,13 @@ export default function Home() {
 
         {/* Stats */}
         <div className="card">
-          <h2 className="section-title">
-            <svg
-              className="w-5 h-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M12 20V10" />
-              <path d="M18 20V4" />
-              <path d="M6 20v-4" />
-            </svg>
-            Your Stats
-          </h2>
+          <h2 className="section-title">Your Stats</h2>
           <StatsDisplay />
         </div>
 
         {/* Check-in Button */}
         <div className="card">
-          <h2 className="section-title">
-            <svg
-              className="w-5 h-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M12 8v4l3 3" />
-              <circle cx="12" cy="12" r="10" />
-            </svg>
-            Daily Check-in
-          </h2>
+          <h2 className="section-title">Daily Check-in</h2>
           <p className="last-check-in">
             Last check-in:{" "}
             {userInfo?.lastCheckIn && Number(userInfo.lastCheckIn) > 0
@@ -128,20 +103,7 @@ export default function Home() {
 
         {/* Rules */}
         <div className="card">
-          <h2 className="section-title">
-            <svg
-              className="w-5 h-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
-              <path d="M12 8v4" />
-              <path d="M12 16h.01" />
-            </svg>
-            How It Works
-          </h2>
+          <h2 className="section-title">How It Works</h2>
           <div className="rules-list">
             <div className="rule-item">
               <div className="check-icon">
