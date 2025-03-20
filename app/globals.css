@@ -36,13 +36,14 @@ body {
   min-height: 100vh;
   background-color: var(--background);
   position: relative;
+  padding: 0 16px;
 }
 
 .page-header {
   background: var(--primary);
   color: white;
-  padding: 24px;
-  margin-bottom: 16px;
+  padding: 24px 16px;
+  margin: 0 -16px 16px;
   position: relative;
 }
 
@@ -62,8 +63,8 @@ body {
   background-color: var(--card-bg);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-sm);
-  padding: 24px;
-  margin-bottom: 16px;
+  padding: 20px;
+  margin-bottom: 14px;
 }
 
 .section-title {
@@ -259,11 +260,12 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   background-color: white;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.05);
   z-index: 100;
   max-width: 480px;
   margin: 0 auto;
   border-top: 1px solid var(--border-color);
+  height: 56px;
 }
 
 .nav-item {
@@ -271,10 +273,10 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 12px;
+  padding: 8px;
   color: var(--text-light);
   text-decoration: none;
-  font-size: 12px;
+  font-size: 10px;
 }
 
 .nav-item.active {
@@ -282,8 +284,8 @@ body {
 }
 
 .nav-icon {
-  font-size: 20px;
-  margin-bottom: 4px;
+  font-size: 18px;
+  margin-bottom: 2px;
 }
 
 .error-text {
@@ -417,9 +419,9 @@ body {
 }
 
 .gift-box {
-  width: 80px;
-  height: 80px;
-  margin: 24px auto;
+  width: 70px;
+  height: 70px;
+  margin: 16px auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -436,9 +438,9 @@ body {
 }
 
 .rewards-subtitle {
-  font-size: 16px;
+  font-size: 15px;
   color: var(--text-secondary);
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .already-checked-in {
@@ -498,5 +500,5 @@ body {
 
 /* Add content padding to push content above navbar */
 .content-padding {
-  padding-bottom: 70px;
+  padding-bottom: 76px;
 }

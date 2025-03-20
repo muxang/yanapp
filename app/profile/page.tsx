@@ -3,10 +3,41 @@
 import { useAccount } from "wagmi";
 import { useUserInfo } from "../hooks/useContract";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function ProfilePage() {
   const { isConnected, address } = useAccount();
   const { userInfo } = useUserInfo();
+  const [profileImage, setProfileImage] = useState<string>(
+    "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
+  );
+  const [userName, setUserName] = useState<string>("User");
+
+  // 获取Farcaster用户信息（简化处理，直接使用状态变量）
+  // 实际项目中应根据SDK文档调整
+  useEffect(() => {
+    // 防止在服务器端运行
+    if (typeof window !== "undefined") {
+      try {
+        // 此处简化处理，实际应从Farcaster API获取
+        // 由于SDK API变更，简化为使用query参数或local storage
+        const params = new URLSearchParams(window.location.search);
+        const fid = params.get("fid");
+
+        if (fid) {
+          // 如果有FID参数，可以从API获取头像和名称
+          // 这里仅做示例，实际集成时应使用SDK的方法
+          const localImage = localStorage.getItem("farcaster_pfp");
+          const localName = localStorage.getItem("farcaster_name");
+
+          if (localImage) setProfileImage(localImage);
+          if (localName) setUserName(localName);
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    }
+  }, []);
 
   return (
     <div className="app-container content-padding">
@@ -18,12 +49,8 @@ export default function ProfilePage() {
           </svg>
         </div>
         <div className="profile-card">
-          <img
-            src="https://randomuser.me/api/portraits/men/32.jpg"
-            alt="Profile"
-            className="profile-avatar"
-          />
-          <h1 className="profile-name">Alex Johnson</h1>
+          <img src={profileImage} alt="Profile" className="profile-avatar" />
+          <h1 className="profile-name">{userName}</h1>
           <p className="profile-title">MWGA Enthusiast</p>
           <div className="points-badge mx-auto">
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -37,7 +64,7 @@ export default function ProfilePage() {
         </div>
       </header>
 
-      <main className="px-4">
+      <main>
         {/* Stats Card */}
         <div className="card">
           <div className="stats-grid">
@@ -64,7 +91,7 @@ export default function ProfilePage() {
 
         {/* Points & Rewards */}
         <div className="card">
-          <h2 className="section-title">Points & Rewards</h2>
+          <h2 className="section-title mb-2">Points & Rewards</h2>
           <div>
             <div className="menu-item">
               <div className="menu-icon icon-blue">
@@ -147,7 +174,7 @@ export default function ProfilePage() {
 
         {/* Settings & Support */}
         <div className="card">
-          <h2 className="section-title">Settings & Support</h2>
+          <h2 className="section-title mb-2">Settings & Support</h2>
           <div>
             <div className="menu-item">
               <div className="menu-icon icon-purple">
@@ -183,7 +210,7 @@ export default function ProfilePage() {
       <nav className="nav-bar">
         <Link href="/" className="nav-item">
           <svg
-            className="w-6 h-6 nav-icon"
+            className="w-5 h-5 nav-icon"
             viewBox="0 0 24 24"
             fill="currentColor"
           >
@@ -193,7 +220,7 @@ export default function ProfilePage() {
         </Link>
         <Link href="/rewards" className="nav-item">
           <svg
-            className="w-6 h-6 nav-icon"
+            className="w-5 h-5 nav-icon"
             viewBox="0 0 24 24"
             fill="currentColor"
           >
@@ -203,7 +230,7 @@ export default function ProfilePage() {
         </Link>
         <Link href="/profile" className="nav-item active">
           <svg
-            className="w-6 h-6 nav-icon"
+            className="w-5 h-5 nav-icon"
             viewBox="0 0 24 24"
             fill="currentColor"
           >
