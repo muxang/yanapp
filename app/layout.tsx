@@ -2,8 +2,8 @@ import "./globals.css";
 import { WagmiProvider } from "./components/providers/WagmiProvider";
 
 export const metadata = {
-  title: "Daily Check-in | Web3 Rewards",
-  description: "Earn points for Web3 benefits through daily check-ins",
+  title: "Daily Check-in | MWGA Rewards",
+  description: "Earn points for MWGA benefits through daily check-ins",
 };
 
 // Base URL - replace with your deployed URL
