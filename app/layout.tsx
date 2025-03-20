@@ -25,12 +25,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Frame metadata */}
+        {/* Farcaster Frames v2 meta tags */}
         <meta property="fc:frame" content="vNext" />
-        <meta property="fc:frame:image" content={`${baseUrl}/api/og`} />
-        <meta property="fc:frame:button:1" content="Check In Daily" />
-        <meta property="fc:frame:button:1:action" content="post" />
-        <meta property="fc:frame:post_url" content={`${baseUrl}/api/frame`} />
+        <meta
+          property="fc:frame:image"
+          content={`${baseUrl}/api/frame-image`}
+        />
+        <meta property="fc:frame:button:1" content="Open Check-in App" />
+        <meta property="fc:frame:button:1:action" content="post_url" />
+        <meta
+          property="fc:frame:post_url"
+          content={`${baseUrl}/api/frame-interaction`}
+        />
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
           rel="stylesheet"

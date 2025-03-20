@@ -7,6 +7,8 @@ import { base } from "wagmi/chains";
 import { frameConnector } from "../../../lib/connector";
 import sdk from "@farcaster/frame-sdk";
 import { useEffect, useState } from "react";
+import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
+import "@rainbow-me/rainbowkit/styles.css";
 
 const config = createConfig({
   chains: [base],
@@ -70,7 +72,9 @@ export function WagmiProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <Provider config={config}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider theme={darkTheme()}>{children}</RainbowKitProvider>
+      </QueryClientProvider>
     </Provider>
   );
 }
