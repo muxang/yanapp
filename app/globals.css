@@ -136,8 +136,8 @@ body {
   margin-bottom: 2rem;
   flex-wrap: nowrap;
   padding: 0 20px;
-  margin-left: 20px;
-  margin-right: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
   width: auto;
   min-width: fit-content;
 }
