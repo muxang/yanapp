@@ -10,11 +10,11 @@ export async function GET() {
     frame: {
       version: "1",
       name: "WrapAI",
-      iconUrl: "https://wrapai.app/logo.svg",
+      iconUrl: "https://wrapai.app/logo.png",
       homeUrl: "https://wrapai.app",
       imageUrl: "https://wrapai.app/api/frame-image",
       buttonTitle: "Check this out",
-      splashImageUrl: "https://wrapai.app/api/splash-image",
+      splashImageUrl: "https://wrapai.app/logo.png",
       splashBackgroundColor: "#eeccff",
       webhookUrl: "https://wrapai.app/api/webhook",
     },
