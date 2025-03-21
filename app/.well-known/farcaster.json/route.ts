@@ -11,7 +11,7 @@ export async function GET() {
     frame: {
       version: "1",
       name: "WrapAI",
-      iconUrl: "https://wrapai.app/logo.png",
+      iconUrl: "https://wrapai.app/logo-hd.png",
       homeUrl: "https://wrapai.app",
       imageUrl: "https://wrapai.app/logo-hd.png",
       buttonTitle: "Check this out",
