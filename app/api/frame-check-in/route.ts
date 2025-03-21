@@ -7,7 +7,11 @@ import { getContractConfig } from "../../contracts/config";
 import { UserInfo } from "../../contracts/types";
 
 // Base URL - keep consistent with layout.tsx
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://wrapai.app";
+let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "wrapai.app";
+// Ensure URL has https:// prefix
+if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
+  baseUrl = "https://" + baseUrl;
+}
 
 // Farcaster Frame message structure interface
 interface FrameMessage {
