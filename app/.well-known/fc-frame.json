@@ -6,8 +6,8 @@
   },
   "buttons": [
     {
-      "label": "Check In",
-      "action": "link",
+      "label": "Enter Mini App",
+      "action": "post_redirect",
       "target": "https://warpcast.com/~/frames/launch?domain=wrapai.app"
     }
   ],

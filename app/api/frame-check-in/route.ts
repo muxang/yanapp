@@ -186,8 +186,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
           <head>
             <meta property="fc:frame" content="vNext" />
             <meta property="fc:frame:image" content="${baseUrl}/images/wrapai-banner.png" />
-            <meta property="fc:frame:button:1" content="Try Again" />
-            <meta property="fc:frame:post_url" content="${baseUrl}/api/frame-check-in" />
+            <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
+            <meta property="fc:frame:button:1" content="Enter Mini App" />
+            <meta property="fc:frame:button:1:action" content="post_redirect" />
+            <meta property="fc:frame:button:1:target" content="${warpcastFrameUrl}" />
+            <meta property="fc:frame:image:link" content="${warpcastFrameUrl}" />
           </head>
           <body>Invalid request format</body>
         </html>
@@ -204,35 +207,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     // Get user info and button index from untrustedData
     const { fid, buttonIndex, inputText } = body.untrustedData;
 
-    // Handle "Learn More" button click (button index 2)
-    if (buttonIndex === 2) {
-      return new NextResponse(
-        `
-        <html>
-          <head>
-            <meta property="fc:frame" content="vNext" />
-            <meta property="fc:frame:image" content="${baseUrl}/api/learn-more-image" />
-            <meta property="fc:frame:button:1" content="Start Check-in" />
-            <meta property="fc:frame:button:1:action" content="post_redirect" />
-            <meta property="fc:frame:button:1:target" content="${warpcastFrameUrl}" />
-            <meta property="fc:frame:button:2" content="Back" />
-            <meta property="fc:frame:post_url" content="${baseUrl}/api/frame-check-in" />
-          </head>
-          <body>View WrapAI Check-in System Details</body>
-        </html>
-        `,
-        {
-          status: 200,
-          headers: {
-            "Content-Type": "text/html",
-          },
-        }
-      );
-    }
-
-    // Handle "Check In Now" button click (button index 1)
-    // For post_redirect buttons, we redirect directly to the app
-    if (buttonIndex === 1) {
+    // All button clicks should redirect to the app
+    if (buttonIndex === 1 || buttonIndex === 2) {
       return new NextResponse(null, {
         status: 302,
         headers: {
@@ -244,13 +220,29 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     // Get user address
     const userAddress = await getFarcasterUserAddress(fid);
     if (!userAddress) {
-      // Return redirect to app
-      return new NextResponse(null, {
-        status: 302,
-        headers: {
-          Location: warpcastFrameUrl,
-        },
-      });
+      // Return frame with redirect button
+      return new NextResponse(
+        `
+        <html>
+          <head>
+            <meta property="fc:frame" content="vNext" />
+            <meta property="fc:frame:image" content="${baseUrl}/images/wrapai-banner.png" />
+            <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
+            <meta property="fc:frame:button:1" content="Enter Mini App" />
+            <meta property="fc:frame:button:1:action" content="post_redirect" />
+            <meta property="fc:frame:button:1:target" content="${warpcastFrameUrl}" />
+            <meta property="fc:frame:image:link" content="${warpcastFrameUrl}" />
+          </head>
+          <body>User not found. Please enter mini app to register.</body>
+        </html>
+        `,
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "text/html",
+          },
+        }
+      );
     }
 
     // Attempt to check in for user
@@ -263,9 +255,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
           <head>
             <meta property="fc:frame" content="vNext" />
             <meta property="fc:frame:image" content="${baseUrl}/api/frame-error" />
-            <meta property="fc:frame:button:1" content="Return to App" />
+            <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
+            <meta property="fc:frame:button:1" content="Enter Mini App" />
             <meta property="fc:frame:button:1:action" content="post_redirect" />
             <meta property="fc:frame:button:1:target" content="${warpcastFrameUrl}" />
+            <meta property="fc:frame:image:link" content="${warpcastFrameUrl}" />
           </head>
           <body>Check-in failed: ${result.message}</body>
         </html>
@@ -294,9 +288,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         <head>
           <meta property="fc:frame" content="vNext" />
           <meta property="fc:frame:image" content="${imageUrl}" />
-          <meta property="fc:frame:button:1" content="Open App" />
+          <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
+          <meta property="fc:frame:button:1" content="Enter Mini App" />
           <meta property="fc:frame:button:1:action" content="post_redirect" />
           <meta property="fc:frame:button:1:target" content="${warpcastFrameUrl}" />
+          <meta property="fc:frame:image:link" content="${warpcastFrameUrl}" />
         </head>
         <body>Check-in successful! Points: ${points}, Consecutive Check-ins: ${streak} days</body>
       </html>
@@ -316,8 +312,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         <head>
           <meta property="fc:frame" content="vNext" />
           <meta property="fc:frame:image" content="${baseUrl}/api/frame-error" />
-          <meta property="fc:frame:button:1" content="Retry" />
-          <meta property="fc:frame:post_url" content="${baseUrl}/api/frame-check-in" />
+          <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
+          <meta property="fc:frame:button:1" content="Enter Mini App" />
+          <meta property="fc:frame:button:1:action" content="post_redirect" />
+          <meta property="fc:frame:button:1:target" content="${warpcastFrameUrl}" />
+          <meta property="fc:frame:image:link" content="${warpcastFrameUrl}" />
         </head>
         <body>An error occurred</body>
       </html>
