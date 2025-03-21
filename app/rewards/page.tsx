@@ -13,11 +13,9 @@ export default function RewardsPage() {
   const handleNotification = () => {
     try {
       // Call Farcaster SDK to view profile with ID 567606
-      if (typeof window !== "undefined" && window.parent !== window) {
-        import("@farcaster/frame-sdk").then((sdk) => {
-          sdk.default.actions.viewProfile({ fid: 567606 });
-        });
-      }
+      import("@farcaster/frame-sdk").then((sdk) => {
+        sdk.default.actions.viewProfile({ fid: 567606 });
+      });
     } catch (error) {
       console.error("Failed to view profile:", error);
     }
