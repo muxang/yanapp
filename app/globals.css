@@ -139,7 +139,7 @@ body {
   margin-left: 0;
   margin-right: 0;
   overflow-x: auto;
-  padding: 0 20px;
+  padding: 0 10px;
   scrollbar-width: none; /* Firefox */
   position: relative; /* 为bonus标签提供定位上下文 */
   padding-top: 10px; /* 为bonus标签提供足够的上方空间 */
@@ -150,8 +150,8 @@ body {
 }
 
 .day-circle {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
