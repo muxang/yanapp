@@ -4,6 +4,9 @@ import * as React from "react";
 import { join } from "path";
 import * as fs from "fs";
 
+// 设置为动态路由
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   try {
     // 从URL参数中获取数据

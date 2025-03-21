@@ -1,14 +1,15 @@
 "use client";
 
-import { useAccount } from "wagmi";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useAccount, useConnect } from "wagmi";
 import { useEffect, useState } from "react";
-import sdk from "@farcaster/frame-sdk";
 import { useUserInfo } from "../hooks/useContract";
 import { CheckInButton } from "./CheckInButton";
 import { useReadContract } from "wagmi";
 import { CHECK_IN_ABI } from "../contracts/abi";
 import { getContractConfig } from "../contracts/config";
+import { config as wagmiConfig } from "./providers/WagmiProvider";
+
+import sdk from "@farcaster/frame-sdk";
 
 export default function CheckIn() {
   const { isConnected } = useAccount();
@@ -16,6 +17,7 @@ export default function CheckIn() {
   const [isFrameLoaded, setIsFrameLoaded] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const config = getContractConfig();
+  const { connect } = useConnect();
 
   // 从合约中获取积分和奖励配置
   const { data: dailyPointsData } = useReadContract({
@@ -74,7 +76,12 @@ export default function CheckIn() {
   if (!isConnected) {
     return (
       <div className="flex flex-col items-center gap-4">
-        <ConnectButton />
+        <button
+          onClick={() => connect({ connector: wagmiConfig.connectors[0] })}
+          className={`check-in-button`}
+        >
+          connect wallet
+        </button>
       </div>
     );
   }
