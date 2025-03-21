@@ -12,8 +12,9 @@ if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
   baseUrl = "https://" + baseUrl;
 }
 
-// Warpcast Frame URL for direct app entry
-const warpcastFrameUrl = `https://warpcast.com/~/frames/launch?domain=wrapai.app`;
+// Use banner image for splash (ideally should be 200x200px and < 1MB)
+// TODO: Replace with a proper square logo image
+const splashImageUrl = `${baseUrl}/logo-large.png`;
 
 interface Props {
   params: Promise<{
@@ -29,8 +30,8 @@ const frame = {
     action: {
       type: "launch_frame",
       name: "WrapAI | Daily Check-in System",
-      url: warpcastFrameUrl,
-      splashImageUrl: `${baseUrl}/images/wrapai-banner.png`,
+      url: baseUrl,
+      splashImageUrl: splashImageUrl,
       splashBackgroundColor: "#142B44",
     },
   },

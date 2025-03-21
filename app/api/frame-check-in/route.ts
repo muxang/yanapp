@@ -7,9 +7,6 @@ if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
   baseUrl = "https://" + baseUrl;
 }
 
-// Warpcast Frame URL for direct app entry
-const warpcastFrameUrl = `https://warpcast.com/~/frames/launch?domain=wrapai.app`;
-
 // Simplified Farcaster Frame message structure
 interface FrameMessage {
   untrustedData: {
@@ -33,7 +30,7 @@ function renderFrameResponse(
       action: {
         type: "launch_frame",
         name: title,
-        url: warpcastFrameUrl,
+        url: baseUrl,
         splashImageUrl: imageUrl,
         splashBackgroundColor: "#142B44",
       },
@@ -96,7 +93,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return new NextResponse(null, {
       status: 302,
       headers: {
-        Location: warpcastFrameUrl,
+        Location: baseUrl,
       },
     });
   } catch (error) {
