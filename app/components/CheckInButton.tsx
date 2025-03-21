@@ -108,14 +108,14 @@ export const CheckInButton = () => {
     return `${hours}h ${minutes}m`;
   };
 
-  // 已签到状态显示
   if (isHasCheckedInToday || (!canCheckIn && isConnected && userInfo)) {
     return (
       <div className="mt-4 w-full">
-        <div className="flex flex-col items-center py-6">
+        <div className="flex flex-col items-center">
           <button
             disabled
-            className="w-full max-w-[320px] py-4 px-8 bg-gray-300 text-gray-600 rounded-full font-medium text-lg cursor-not-allowed"
+            className="check-in-button bg-gray-200 hover:bg-gray-200 text-gray-500"
+            style={{ cursor: "not-allowed" }}
           >
             Already Checked In
           </button>
