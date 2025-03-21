@@ -114,7 +114,7 @@ export const CheckInButton = () => {
         <div className="flex flex-col items-center">
           <button
             disabled
-            className="check-in-button bg-gray-200 hover:bg-gray-200 text-gray-500"
+            className="check-in-button opacity-60 bg-gray-300 text-gray-600"
             style={{ cursor: "not-allowed" }}
           >
             Already Checked In
@@ -137,29 +137,6 @@ export const CheckInButton = () => {
       {showTip ? (
         <div className="success-message animate-fade-in">
           <div className="flex flex-col items-center justify-center py-4 px-6 bg-green-50 border border-green-200 rounded-xl text-green-700 shadow-sm">
-            <div className="success-icon-container mb-3">
-              <svg
-                className="w-12 h-12 text-green-500"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="11"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                ></circle>
-                <path
-                  d="M7 13l3 3 7-7"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                ></path>
-              </svg>
-            </div>
             <div className="text-center">
               <h3 className="text-lg font-semibold mb-1">
                 Check-in Successful!
