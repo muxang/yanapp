@@ -174,9 +174,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         <html>
           <head>
             <meta property="fc:frame" content="vNext" />
-            <meta property="fc:frame:image" content="https://wrapcast.vercel.app/api/frame-image" />
+            <meta property="fc:frame:image" content="https://wrapai.app/images/wrapai-banner.png" />
             <meta property="fc:frame:button:1" content="Try Again" />
-            <meta property="fc:frame:post_url" content="https://wrapcast.vercel.app/api/frame-check-in" />
+            <meta property="fc:frame:post_url" content="https://wrapai.app" />
           </head>
           <body>无效的请求格式</body>
         </html>

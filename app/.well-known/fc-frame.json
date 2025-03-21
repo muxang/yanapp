@@ -2,13 +2,13 @@
   "version": "vNext",
   "image": {
     "aspectRatio": "1.91:1",
-    "url": "https://wrapai.app/api/frame-image"
+    "url": "https://wrapai.app/images/wrapai-banner.png"
   },
   "buttons": [
     {
       "label": "Check In",
-      "action": "post",
-      "target": "https://wrapai.app/api/frame-check-in"
+      "action": "link",
+      "target": "https://wrapai.app"
     }
   ],
   "frames": [

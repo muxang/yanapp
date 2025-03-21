@@ -44,10 +44,13 @@ export default function Home() {
       <Head>
         {/* Farcaster Frames v2 meta tags */}
         <meta property="fc:frame" content="vNext" />
-        <meta property="fc:frame:image" content="/api/frame-image" />
+        <meta
+          property="fc:frame:image"
+          content="https://wrapai.app/images/wrapai-banner.png"
+        />
         <meta property="fc:frame:button:1" content="Open Check-in App" />
-        <meta property="fc:frame:button:1:action" content="post_url" />
-        <meta property="fc:frame:post_url" content="/api/frame-interaction" />
+        <meta property="fc:frame:button:1:action" content="link" />
+        <meta property="fc:frame:post_url" content="https://wrapai.app" />
       </Head>
       <div className="app-container">
         {showSplash && (
