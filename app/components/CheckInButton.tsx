@@ -114,8 +114,8 @@ export const CheckInButton = () => {
         <div className="flex flex-col items-center">
           <button
             disabled
-            className="check-in-button opacity-60 bg-gray-300 text-gray-600"
-            style={{ cursor: "not-allowed" }}
+            className="check-in-button !bg-gray-100 !text-gray-400 border border-gray-200"
+            style={{ cursor: "not-allowed", opacity: 0.8 }}
           >
             Already Checked In
           </button>

@@ -22,11 +22,12 @@ export default function Home() {
   const totalPoints = Number(userInfo?.totalPoints || 0);
 
   useEffect(() => {
-    // 检查是否是第一次访问
-    const hasVisited = localStorage.getItem("hasVisitedWrapAI");
-    if (!hasVisited) {
+    // 检查是否是从外部进入
+    const isExternalVisit = !sessionStorage.getItem("hasVisitedWrapAI");
+    if (isExternalVisit) {
       setShowSplash(true);
-      localStorage.setItem("hasVisitedWrapAI", "true");
+      // 使用 sessionStorage 记录本次会话已访问
+      sessionStorage.setItem("hasVisitedWrapAI", "true");
     }
   }, []);
 
