@@ -99,12 +99,12 @@ export const CheckInButton = () => {
   if (isHasCheckedInToday) {
     return (
       <div className="mt-4 w-full">
-        <button className="already-checked-in" disabled>
-          <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="currentColor">
+        <div className="flex items-center justify-center bg-green-50 border border-green-200 rounded-lg py-3 px-4 text-green-700">
+          <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
             <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
           </svg>
-          Already Checked In Today
-        </button>
+          <span className="font-medium">Today's check-in completed</span>
+        </div>
         <div className="text-sm text-center mt-2 text-gray-500">
           Next check-in available in{" "}
           <span className="font-medium text-primary">
@@ -171,7 +171,7 @@ export const CheckInButton = () => {
       )}
 
       {!canCheckIn && isConnected && userInfo && !success && (
-        <div className="text-sm text-center mt-2 text-gray-500">
+        <div className="text-xs text-center mt-2 text-gray-500 max-w-[200px] mx-auto">
           Already checked in today, come back tomorrow!
         </div>
       )}

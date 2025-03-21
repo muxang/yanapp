@@ -48,18 +48,6 @@ export default function CheckIn() {
     initFrame();
   }, []);
 
-  const handleSaveFrame = async () => {
-    if (!isFrameLoaded) return;
-
-    try {
-      // 尝试添加 Frame 到 Farcaster 客户端
-      await sdk.actions.addFrame();
-      setIsSaved(true);
-    } catch (err) {
-      console.error("Failed to add frame to Farcaster:", err);
-    }
-  };
-
   const renderStreakIndicators = () => {
     const consecutiveDays = Number(userInfo?.consecutiveCheckIns || 0);
 
@@ -98,20 +86,6 @@ export default function CheckIn() {
       {renderStreakIndicators()}
 
       <CheckInButton />
-
-      {isFrameLoaded && (
-        <button
-          onClick={handleSaveFrame}
-          disabled={isSaved}
-          className={`mt-4 px-4 py-2 rounded-md ${
-            isSaved
-              ? "bg-gray-300 text-gray-500"
-              : "bg-blue-500 text-white hover:bg-blue-600"
-          }`}
-        >
-          {isSaved ? "已保存至Farcaster" : "保存至Farcaster"}
-        </button>
-      )}
 
       <div className="mt-12 space-y-3 w-full">
         <h2 className="text-xl font-bold mb-2 text-gray-800">How It Works</h2>
