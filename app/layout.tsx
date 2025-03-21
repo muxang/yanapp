@@ -25,7 +25,7 @@ const frame = {
   version: "next",
   imageUrl: `${baseUrl}/images/wrapai-banner.png`,
   button: {
-    title: "WrapAI | Daily Check-in Syste",
+    title: "WrapAI",
     action: {
       type: "launch_frame",
       name: "WrapAI | Daily Check-in Syste",
