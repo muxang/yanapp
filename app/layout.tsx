@@ -25,23 +25,27 @@ const frame = {
   version: "next",
   imageUrl: `${baseUrl}/images/wrapai-banner.png`,
   button: {
-    title: "WrapAI",
+    title: "Enter Mini App",
     action: {
       type: "launch_frame",
-      name: "WrapAI | Daily Check-in Syste",
+      name: "WrapAI | Daily Check-in System",
       url: warpcastFrameUrl,
       splashImageUrl: `${baseUrl}/images/wrapai-banner.png`,
-      splashBackgroundColor: "#f7f7f7",
+      splashBackgroundColor: "#142B44",
     },
   },
 };
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "WrapAI | Daily Check-in Syste",
+    title: "WrapAI | Daily Check-in System",
+    description:
+      "Earn points through daily check-ins and redeem for exclusive Web3 rewards",
     openGraph: {
-      title: "WrapAI | Daily Check-in Syste",
-      description: "WrapAIapp.",
+      title: "WrapAI | Daily Check-in System",
+      description:
+        "Earn points through daily check-ins and redeem for Web3 rewards",
+      images: [`${baseUrl}/images/wrapai-banner.png`],
     },
     other: {
       "fc:frame": JSON.stringify(frame),
@@ -54,5 +58,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <Providers>{children}</Providers>;
+  return (
+    <html lang="en">
+      <head />
+      <body className={inter.className}>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
+  );
 }

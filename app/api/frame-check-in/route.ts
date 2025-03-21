@@ -18,35 +18,57 @@ interface FrameMessage {
   };
 }
 
-// Handler for GET requests - required for initial frame loading
-export async function GET(req: NextRequest): Promise<NextResponse> {
-  return new NextResponse(
-    `<!DOCTYPE html>
+// Render v2 frame response
+function renderFrameResponse(
+  title: string,
+  description: string,
+  imageUrl: string
+) {
+  // Create frame JSON object for Farcaster V2
+  const frame = {
+    version: "next",
+    imageUrl: imageUrl,
+    button: {
+      title: "Enter Mini App",
+      action: {
+        type: "launch_frame",
+        name: title,
+        url: warpcastFrameUrl,
+        splashImageUrl: imageUrl,
+        splashBackgroundColor: "#142B44",
+      },
+    },
+  };
+
+  // Generate HTML with metadata
+  return `<!DOCTYPE html>
 <html>
   <head>
-    <title>WrapAI Check-in System</title>
-    <meta property="fc:frame" content="vNext" />
-    <meta property="fc:frame:image" content="${baseUrl}/images/wrapai-banner.png" />
-    <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
-    <meta property="fc:frame:button:1" content="Enter Mini App" />
-    <meta property="fc:frame:button:1:action" content="post_redirect" />
-    <meta property="fc:frame:button:1:target" content="${warpcastFrameUrl}" />
-    <meta property="fc:frame:post_url" content="${baseUrl}/api/frame-check-in" />
-    <meta property="og:image" content="${baseUrl}/images/wrapai-banner.png" />
-    <meta property="og:title" content="WrapAI Check-in System" />
-    <meta property="og:description" content="Earn points through daily check-ins and redeem for Web3 rewards" />
+    <title>${title}</title>
+    <meta property="og:title" content="${title}" />
+    <meta property="og:description" content="${description}" />
+    <meta property="og:image" content="${imageUrl}" />
+    <meta property="fc:frame" content="${JSON.stringify(frame)}" />
   </head>
   <body>
-    <p>WrapAI Daily Check-in System</p>
+    <p>${description}</p>
   </body>
-</html>`,
-    {
-      status: 200,
-      headers: {
-        "Content-Type": "text/html",
-      },
-    }
-  );
+</html>`;
+}
+
+// Handler for GET requests - required for initial frame loading
+export async function GET(req: NextRequest): Promise<NextResponse> {
+  const title = "WrapAI Check-in System";
+  const description =
+    "Earn points through daily check-ins and redeem for Web3 rewards";
+  const imageUrl = `${baseUrl}/images/wrapai-banner.png`;
+
+  return new NextResponse(renderFrameResponse(title, description, imageUrl), {
+    status: 200,
+    headers: {
+      "Content-Type": "text/html",
+    },
+  });
 }
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
@@ -55,7 +77,19 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     // Validate basic frame message
     if (!body || !body.untrustedData) {
-      return generateErrorResponse("Invalid request format");
+      const title = "WrapAI - Error";
+      const description = "Invalid request format";
+      const imageUrl = `${baseUrl}/api/frame-error`;
+
+      return new NextResponse(
+        renderFrameResponse(title, description, imageUrl),
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "text/html",
+          },
+        }
+      );
     }
 
     // Any button click should redirect to the app
@@ -67,35 +101,16 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     });
   } catch (error) {
     console.error("Error processing frame request:", error);
-    return generateErrorResponse("An error occurred");
-  }
-}
 
-// Helper function to generate error response
-function generateErrorResponse(message: string): NextResponse {
-  return new NextResponse(
-    `<!DOCTYPE html>
-<html>
-  <head>
-    <title>WrapAI - Error</title>
-    <meta property="fc:frame" content="vNext" />
-    <meta property="fc:frame:image" content="${baseUrl}/api/frame-error" />
-    <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
-    <meta property="fc:frame:button:1" content="Enter Mini App" />
-    <meta property="fc:frame:button:1:action" content="post_redirect" />
-    <meta property="fc:frame:button:1:target" content="${warpcastFrameUrl}" />
-    <meta property="fc:frame:post_url" content="${baseUrl}/api/frame-check-in" />
-    <meta property="og:image" content="${baseUrl}/api/frame-error" />
-    <meta property="og:title" content="WrapAI - Error" />
-    <meta property="og:description" content="${message}" />
-  </head>
-  <body>${message}</body>
-</html>`,
-    {
-      status: 400,
+    const title = "WrapAI - Error";
+    const description = "An error occurred";
+    const imageUrl = `${baseUrl}/api/frame-error`;
+
+    return new NextResponse(renderFrameResponse(title, description, imageUrl), {
+      status: 500,
       headers: {
         "Content-Type": "text/html",
       },
-    }
-  );
+    });
+  }
 }
