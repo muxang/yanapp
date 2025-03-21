@@ -19,6 +19,12 @@ export async function GET() {
       splashBackgroundColor: "#eeccff",
       webhookUrl: "https://wrapai.app/api/webhook",
     },
+    triggers: {
+      type: "cast",
+      id: "wrapai",
+      url: "https://wrapai.app",
+      name: "Check In",
+    },
   };
 
   return Response.json(config);
