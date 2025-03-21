@@ -23,7 +23,7 @@ export async function GET() {
       type: "cast",
       id: "wrapai",
       url: "https://wrapai.app",
-      name: "Check In",
+      name: "Check In Now",
     },
   };
 
