@@ -111,17 +111,19 @@ export const CheckInButton = () => {
   if (isHasCheckedInToday) {
     return (
       <div className="mt-4 w-full">
-        <div className="flex items-center justify-center bg-green-50 border border-green-200 rounded-xl py-3 px-4 text-green-700 shadow-sm">
-          <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-          </svg>
-          <span className="font-medium">Today's check-in completed</span>
-        </div>
-        <div className="text-sm text-center mt-2 text-gray-500">
-          Next check-in available in{" "}
-          <span className="font-medium text-primary">
-            {formatTimeRemaining()}
-          </span>
+        <div className="flex flex-col items-center py-6">
+          <button
+            disabled
+            className="w-full max-w-[240px] py-4 px-6 bg-gray-300 text-gray-600 rounded-full font-medium cursor-not-allowed"
+          >
+            Already Checked In
+          </button>
+          <div className="text-sm text-center mt-2 text-gray-500">
+            Next check-in available in{" "}
+            <span className="font-medium text-primary">
+              {formatTimeRemaining()}
+            </span>
+          </div>
         </div>
       </div>
     );

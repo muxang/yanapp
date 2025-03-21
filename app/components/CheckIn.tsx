@@ -63,9 +63,8 @@ export default function CheckIn() {
             }
           >
             {day}
-            {day % 3 === 0 && (
-              <div className="day-bonus">+{day * consecutiveBonus}</div>
-            )}
+            {day === 3 && <div className="day-bonus">+15</div>}
+            {day === 6 && <div className="day-bonus">+30</div>}
           </div>
         ))}
       </div>

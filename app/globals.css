@@ -132,7 +132,7 @@ body {
 /* Check-in indicator styles */
 .check-in-days {
   display: flex;
-  gap: 4px;
+  gap: 12px;
   justify-content: center;
   margin-bottom: 2rem;
   flex-wrap: nowrap;
@@ -150,28 +150,27 @@ body {
 }
 
 .day-circle {
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 500;
+  font-weight: 600;
   position: relative;
-  border: 2px solid white;
+  border: none;
   flex-shrink: 0; /* 确保不会被压缩 */
   background-color: #E5E7EB;
   color: #6B7280;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1;
-  margin-top: 8px; /* 为顶部的bonus标签留出空间 */
+  margin-top: 14px; /* 为顶部的bonus标签留出空间 */
 }
 
 .day-active {
-  background-color: #4F6AF6;
+  background-color: #4c6ef5;
   color: white;
-  border: 2px solid rgba(79, 106, 246, 0.3);
 }
 
 .day-inactive {
@@ -181,22 +180,22 @@ body {
 
 .day-bonus {
   position: absolute;
-  top: -10px; /* 调整位置使其更贴近圆圈但不重叠 */
+  top: -14px; /* 调整位置使其更贴近圆圈但不重叠 */
   left: 50%;
   transform: translateX(-50%);
-  background-color: #FFA500;
+  background-color: #ff9f45;
   color: white;
   font-size: 12px; /* 调小字体确保在所有设备上更好地显示 */
-  padding: 1px 6px;
+  padding: 2px 8px;
   border-radius: 9999px;
   font-weight: bold;
-  height: 18px;
-  line-height: 16px;
+  height: 22px;
+  line-height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   white-space: nowrap;
-  min-width: 24px;
+  min-width: 32px;
   z-index: 10;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
