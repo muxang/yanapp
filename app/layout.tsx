@@ -6,7 +6,14 @@ import { Providers } from "./providers";
 const inter = Inter({ subsets: ["latin"] });
 
 // Base URL - replace with your deployed URL
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://wrapai.app";
+let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "wrapai.app";
+// Ensure URL has https:// prefix
+if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
+  baseUrl = "https://" + baseUrl;
+}
+
+// Warpcast Frame URL for direct app entry
+const warpcastFrameUrl = `https://warpcast.com/~/frames/launch?domain=wrapai.app`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
@@ -49,18 +56,17 @@ export default function RootLayout({
           property="fc:frame:image"
           content={`${baseUrl}/images/wrapai-banner.png`}
         />
-        <meta property="fc:frame:image:aspect_ratio" content="1.5" />
-        <meta property="fc:frame:button:1" content="Check In Now" />
+        <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
+        <meta property="fc:frame:button:1" content="Enter Mini App" />
         <meta property="fc:frame:button:1:action" content="post_redirect" />
-        <meta property="fc:frame:button:2" content="Learn More" />
-        <meta property="fc:frame:button:2:action" content="post" />
+        <meta property="fc:frame:button:1:target" content={warpcastFrameUrl} />
+        <meta property="fc:frame:image:link" content={warpcastFrameUrl} />
         <meta
           property="fc:frame:post_url"
           content={`${baseUrl}/api/frame-check-in`}
         />
-        <meta property="fc:frame:input:text" content="Enter FID to verify" />
 
-        {/* 渐进式增强的Frame关联 */}
+        {/* Progressive enhancement for Frame association */}
         <meta
           property="og:image"
           content={`${baseUrl}/images/wrapai-banner.png`}
@@ -70,9 +76,8 @@ export default function RootLayout({
           property="og:description"
           content="Earn points through daily check-ins and redeem for Web3 rewards"
         />
-        <meta property="fc:frame:state" content="initial-state" />
 
-        {/* 字体资源 */}
+        {/* Font resources */}
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
           rel="stylesheet"
