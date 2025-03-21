@@ -13,6 +13,9 @@ if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
   baseUrl = "https://" + baseUrl;
 }
 
+// Warpcast Frame URL for direct app entry
+const warpcastFrameUrl = `https://warpcast.com/~/frames/launch?domain=wrapai.app`;
+
 // Farcaster Frame message structure interface
 interface FrameMessage {
   untrustedData: {
@@ -211,7 +214,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             <meta property="fc:frame:image" content="${baseUrl}/api/learn-more-image" />
             <meta property="fc:frame:button:1" content="Start Check-in" />
             <meta property="fc:frame:button:1:action" content="post_redirect" />
-            <meta property="fc:frame:button:1:target" content="${baseUrl}" />
+            <meta property="fc:frame:button:1:target" content="${warpcastFrameUrl}" />
             <meta property="fc:frame:button:2" content="Back" />
             <meta property="fc:frame:post_url" content="${baseUrl}/api/frame-check-in" />
           </head>
@@ -233,7 +236,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       return new NextResponse(null, {
         status: 302,
         headers: {
-          Location: baseUrl,
+          Location: warpcastFrameUrl,
         },
       });
     }
@@ -245,7 +248,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       return new NextResponse(null, {
         status: 302,
         headers: {
-          Location: baseUrl,
+          Location: warpcastFrameUrl,
         },
       });
     }
@@ -262,7 +265,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             <meta property="fc:frame:image" content="${baseUrl}/api/frame-error" />
             <meta property="fc:frame:button:1" content="Return to App" />
             <meta property="fc:frame:button:1:action" content="post_redirect" />
-            <meta property="fc:frame:button:1:target" content="${baseUrl}" />
+            <meta property="fc:frame:button:1:target" content="${warpcastFrameUrl}" />
           </head>
           <body>Check-in failed: ${result.message}</body>
         </html>
@@ -293,7 +296,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
           <meta property="fc:frame:image" content="${imageUrl}" />
           <meta property="fc:frame:button:1" content="Open App" />
           <meta property="fc:frame:button:1:action" content="post_redirect" />
-          <meta property="fc:frame:button:1:target" content="${baseUrl}" />
+          <meta property="fc:frame:button:1:target" content="${warpcastFrameUrl}" />
         </head>
         <body>Check-in successful! Points: ${points}, Consecutive Check-ins: ${streak} days</body>
       </html>

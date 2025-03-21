@@ -8,13 +8,13 @@
     {
       "label": "Check In",
       "action": "link",
-      "target": "/"
+      "target": "https://warpcast.com/~/frames/launch?domain=wrapai.app"
     }
   ],
   "frames": [
     {
       "id": "check-in-app",
-      "url": "/"
+      "url": "https://warpcast.com/~/frames/launch?domain=wrapai.app"
     }
   ],
   "permissions": ["wallets"]
