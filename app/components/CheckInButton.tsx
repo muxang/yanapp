@@ -6,7 +6,7 @@ import {
   useHasCheckedInToday,
 } from "../hooks/useContract";
 import { useAccount } from "wagmi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import sdk from "@farcaster/frame-sdk";
 
 export const CheckInButton = () => {
@@ -18,8 +18,22 @@ export const CheckInButton = () => {
   const [success, setSuccess] = useState(false);
   const [earnedPoints, setEarnedPoints] = useState<number | null>(null);
   const [isConsecutive, setIsConsecutive] = useState(false);
+  const [showTip, setShowTip] = useState(false);
 
-  const { isHasCheckedInToday } = useHasCheckedInToday();
+  const { isHasCheckedInToday, isLoading: isCheckStatusLoading } =
+    useHasCheckedInToday();
+
+  // 成功后的刷新逻辑
+  useEffect(() => {
+    if (success) {
+      setShowTip(true);
+      const timer = setTimeout(() => {
+        setShowTip(false);
+        refetch();
+      }, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [success, refetch]);
 
   const handleCheckIn = async () => {
     if (!isConnected) return;
@@ -41,8 +55,7 @@ export const CheckInButton = () => {
         ? Number(userInfo?.consecutiveCheckIns || 0) + 1
         : 1;
 
-      // 计算预期获得的积分 - 基础积分加连续奖励
-      // 使用合约中的公式：dailyPoints + (consecutiveCheckIns * consecutiveBonus)
+      // 计算预期获得的积分
       const dailyPoints = 10; // 从合约中获取
       const consecutiveBonus = 5; // 从合约中获取
       const expectedPoints =
@@ -50,8 +63,7 @@ export const CheckInButton = () => {
         (isConsecutiveCheckIn ? consecutiveDays * consecutiveBonus : 0);
 
       const tx = await checkIn();
-      await sdk.actions.ready(); // 等待处理完成
-      await refetch();
+      await sdk.actions.ready();
 
       setSuccess(true);
       setEarnedPoints(expectedPoints);
@@ -64,7 +76,7 @@ export const CheckInButton = () => {
     }
   };
 
-  // 检查用户是否可以签到（使用合约提供的canCheckIn结果）
+  // 检查用户是否可以签到
   const canCheckIn = isConnected && !isHasCheckedInToday;
 
   // 检查用户是否有资格获得连续签到奖励
@@ -99,7 +111,7 @@ export const CheckInButton = () => {
   if (isHasCheckedInToday) {
     return (
       <div className="mt-4 w-full">
-        <div className="flex items-center justify-center bg-green-50 border border-green-200 rounded-lg py-3 px-4 text-green-700">
+        <div className="flex items-center justify-center bg-green-50 border border-green-200 rounded-xl py-3 px-4 text-green-700 shadow-sm">
           <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
             <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
           </svg>
@@ -119,46 +131,84 @@ export const CheckInButton = () => {
     <div className="mt-4 w-full">
       {error && <div className="error-text">{error}</div>}
 
-      {success ? (
-        <div className="success-text animate-fade-in flex flex-col items-center justify-center gap-2">
-          <div className="flex items-center">
-            <svg
-              className="w-4 h-4 text-success mr-1"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-            </svg>
-            Check-in successful!
-          </div>
-          {earnedPoints && (
+      {showTip ? (
+        <div className="success-message animate-fade-in">
+          <div className="flex flex-col items-center justify-center py-4 px-6 bg-green-50 border border-green-200 rounded-xl text-green-700 shadow-sm">
+            <div className="success-icon-container mb-3">
+              <svg
+                className="w-12 h-12 text-green-500"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="11"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                ></circle>
+                <path
+                  d="M7 13l3 3 7-7"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                ></path>
+              </svg>
+            </div>
             <div className="text-center">
-              <span className="font-bold">+{earnedPoints} points</span> earned
-              {isConsecutive && (
-                <div className="text-xs text-primary">
-                  Including {consecutiveDays * consecutiveBonus} bonus points
-                  for day {consecutiveDays} streak!
-                </div>
+              <h3 className="text-lg font-semibold mb-1">
+                Check-in Successful!
+              </h3>
+              {earnedPoints && (
+                <p className="text-sm">
+                  You've earned{" "}
+                  <span className="font-bold">+{earnedPoints} points</span>
+                  {isConsecutive && (
+                    <span className="block text-xs mt-1">
+                      Including {consecutiveDays * consecutiveBonus} bonus
+                      points for your {consecutiveDays}-day streak!
+                    </span>
+                  )}
+                </p>
               )}
             </div>
-          )}
+          </div>
+        </div>
+      ) : success ? (
+        <div className="flex justify-center my-2">
+          <div className="loading-indicator">
+            <span className="dot"></span>
+            <span className="dot"></span>
+            <span className="dot"></span>
+          </div>
         </div>
       ) : (
         <>
           <button
             onClick={handleCheckIn}
-            disabled={!canCheckIn || isLoading}
-            className="check-in-button"
+            disabled={!canCheckIn || isLoading || isCheckStatusLoading}
+            className={`check-in-button ${isLoading ? "opacity-70" : ""}`}
           >
-            <svg
-              className="check-in-icon"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              style={{ width: "16px", height: "16px" }}
-            >
-              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-            </svg>
-            {!isLoading ? "Check In Now" : "Loading..."}
+            {isLoading ? (
+              <div className="flex items-center justify-center">
+                <span className="loading-spinner mr-2"></span>
+                <span>Processing...</span>
+              </div>
+            ) : (
+              <>
+                <svg
+                  className="check-in-icon"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  style={{ width: "16px", height: "16px" }}
+                >
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                </svg>
+                Check In Now
+              </>
+            )}
           </button>
 
           {isEligibleForBonus && (
@@ -170,7 +220,7 @@ export const CheckInButton = () => {
         </>
       )}
 
-      {!canCheckIn && isConnected && userInfo && !success && (
+      {!canCheckIn && isConnected && userInfo && !success && !showTip && (
         <div className="text-xs text-center mt-2 text-gray-500 max-w-[200px] mx-auto">
           Already checked in today, come back tomorrow!
         </div>

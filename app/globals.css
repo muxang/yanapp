@@ -132,13 +132,14 @@ body {
 /* Check-in indicator styles */
 .check-in-days {
   display: flex;
-  gap: 5px;
+  gap: 4px;
   justify-content: center;
   margin-bottom: 2rem;
   flex-wrap: nowrap;
   margin-left: 0;
   margin-right: 0;
   overflow-x: auto;
+  padding: 0 20px;
   scrollbar-width: none; /* Firefox */
   position: relative; /* 为bonus标签提供定位上下文 */
   padding-top: 10px; /* 为bonus标签提供足够的上方空间 */
@@ -900,4 +901,97 @@ main {
   font-size: 14px;
   color: var(--text-secondary);
   line-height: 1.4;
+}
+
+/* Loading spinner styles - iOS style */
+.loading-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Loading dots indicator - iOS style */
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background-color: #ccc;
+  border-radius: 50%;
+  animation: dot-pulse 1.5s infinite ease-in-out;
+}
+
+.dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+@keyframes dot-pulse {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+  40% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* Success message animation */
+.success-message {
+  transform-origin: center;
+  animation: success-appear 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.success-icon-container {
+  transform-origin: center;
+  animation: success-icon-appear 0.5s 0.1s backwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes success-appear {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes success-icon-appear {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
