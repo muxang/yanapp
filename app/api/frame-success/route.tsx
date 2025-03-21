@@ -4,25 +4,25 @@ import * as React from "react";
 import { join } from "path";
 import * as fs from "fs";
 
-// 设置为动态路由
+// Set as dynamic route
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   try {
-    // 从URL参数中获取数据
+    // Get data from URL parameters
     const url = new URL(req.url);
     const points = url.searchParams.get("points") || "0";
     const streak = url.searchParams.get("streak") || "0";
-    const fid = url.searchParams.get("fid") || "未知";
+    const fid = url.searchParams.get("fid") || "Unknown";
 
-    // 加载字体
-    const fontPath = join(process.cwd(), "public", "fonts", "inter-normal.ttf");
+    // Load font
+    const fontPath = join(process.cwd(), "public", "fonts", "inter-bold.ttf");
     const fontData = fs.readFileSync(fontPath);
 
     const pointsNum = parseInt(points, 10);
     const streakNum = parseInt(streak, 10);
 
-    // 使用satori生成SVG
+    // Generate SVG using satori
     const svg = await satori(
       <div
         style={{
@@ -68,7 +68,7 @@ export async function GET(req: NextRequest) {
           </div>
           <div>
             <h1 style={{ margin: 0, fontSize: "32px", fontWeight: "bold" }}>
-              签到成功!
+              Check-in Success!
             </h1>
           </div>
         </div>
@@ -90,7 +90,7 @@ export async function GET(req: NextRequest) {
             }}
           >
             <div style={{ fontWeight: "bold", fontSize: "20px" }}>
-              今日获得积分:
+              Points Earned Today:
             </div>
             <div
               style={{ fontWeight: "bold", fontSize: "24px", color: "#4CAF50" }}
@@ -107,12 +107,12 @@ export async function GET(req: NextRequest) {
             }}
           >
             <div style={{ fontWeight: "bold", fontSize: "20px" }}>
-              连续签到:
+              Consecutive Check-ins:
             </div>
             <div
               style={{ fontWeight: "bold", fontSize: "24px", color: "#FF9800" }}
             >
-              {streakNum} {streakNum === 1 ? "天" : "天"}
+              {streakNum} {streakNum === 1 ? "day" : "days"}
             </div>
           </div>
 
@@ -125,8 +125,8 @@ export async function GET(req: NextRequest) {
             }}
           >
             {streakNum > 1
-              ? `连续签到${streakNum}天！继续保持可获得更多奖励！`
-              : "开始你的签到之旅！每天签到可以积累更多奖励。"}
+              ? `${streakNum} consecutive days! Keep it up for more rewards!`
+              : "Start your check-in journey! Daily check-ins will earn you more rewards."}
           </div>
         </div>
 
@@ -149,14 +149,14 @@ export async function GET(req: NextRequest) {
           {
             name: "Inter",
             data: fontData,
-            weight: 400,
+            weight: 700,
             style: "normal",
           },
         ],
       }
     );
 
-    // 将SVG转换为PNG（这里实际返回的是SVG）
+    // Convert SVG to PNG (actually returning SVG)
     return new NextResponse(svg, {
       headers: {
         "Content-Type": "image/svg+xml",
@@ -164,7 +164,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("生成成功图像时出错:", error);
+    console.error("Error generating success image:", error);
     return new NextResponse("Error generating image", { status: 500 });
   }
 }
