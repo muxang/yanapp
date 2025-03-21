@@ -108,13 +108,14 @@ export const CheckInButton = () => {
     return `${hours}h ${minutes}m`;
   };
 
-  if (isHasCheckedInToday) {
+  // 已签到状态显示
+  if (isHasCheckedInToday || (!canCheckIn && isConnected && userInfo)) {
     return (
       <div className="mt-4 w-full">
         <div className="flex flex-col items-center py-6">
           <button
             disabled
-            className="w-full max-w-[240px] py-4 px-6 bg-gray-300 text-gray-600 rounded-full font-medium cursor-not-allowed"
+            className="w-full max-w-[240px] py-3 px-6 bg-gray-300 text-gray-600 rounded-full font-medium cursor-not-allowed"
           >
             Already Checked In
           </button>
@@ -199,17 +200,7 @@ export const CheckInButton = () => {
                 <span>Processing...</span>
               </div>
             ) : (
-              <>
-                <svg
-                  className="check-in-icon"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  style={{ width: "16px", height: "16px" }}
-                >
-                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                </svg>
-                Check In Now
-              </>
+              <>Check In Now</>
             )}
           </button>
 
@@ -220,12 +211,6 @@ export const CheckInButton = () => {
             </div>
           )}
         </>
-      )}
-
-      {!canCheckIn && isConnected && userInfo && !success && !showTip && (
-        <div className="text-xs text-center mt-2 text-gray-500 max-w-[200px] mx-auto">
-          Already checked in today, come back tomorrow!
-        </div>
       )}
     </div>
   );
