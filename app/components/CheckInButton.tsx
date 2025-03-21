@@ -115,7 +115,7 @@ export const CheckInButton = () => {
         <div className="flex flex-col items-center py-6">
           <button
             disabled
-            className="w-full max-w-[240px] py-3 px-6 bg-gray-300 text-gray-600 rounded-full font-medium cursor-not-allowed"
+            className="w-full max-w-[320px] py-4 px-8 bg-gray-300 text-gray-600 rounded-full font-medium text-lg cursor-not-allowed"
           >
             Already Checked In
           </button>
