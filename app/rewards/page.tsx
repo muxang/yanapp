@@ -49,7 +49,7 @@ export default function RewardsPage() {
     <div className="app-container content-padding">
       {/* Header */}
       <header className="page-header">
-        <h1 className="header-title">MWGA Rewards</h1>
+        <h1 className="header-title">WrapAi Rewards</h1>
         <p className="header-subtitle">
           Exchange points for exclusive benefits
         </p>
@@ -154,8 +154,8 @@ export default function RewardsPage() {
             </div>
             <h2 className="rewards-title">Exciting Rewards Coming Soon!</h2>
             <p className="rewards-subtitle">
-              We're preparing amazing MWGA rewards for you. Keep checking in to
-              accumulate points and be ready when rewards launch!
+              We're preparing amazing WrapAi rewards for you. Keep checking in
+              to accumulate points and be ready when rewards launch!
             </p>
           </div>
         )}

@@ -2,26 +2,63 @@
 
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import sdk from "@farcaster/frame-sdk";
 import { useUserInfo } from "../hooks/useContract";
 import { CheckInButton } from "./CheckInButton";
+import { useReadContract } from "wagmi";
+import { CHECK_IN_ABI } from "../contracts/abi";
+import { getContractConfig } from "../contracts/config";
 
 export default function CheckIn() {
   const { isConnected } = useAccount();
   const { userInfo } = useUserInfo();
+  const [isFrameLoaded, setIsFrameLoaded] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const config = getContractConfig();
+
+  // 从合约中获取积分和奖励配置
+  const { data: dailyPointsData } = useReadContract({
+    address: config.address,
+    abi: CHECK_IN_ABI,
+    functionName: "dailyPoints",
+  });
+
+  const { data: consecutiveBonusData } = useReadContract({
+    address: config.address,
+    abi: CHECK_IN_ABI,
+    functionName: "consecutiveBonus",
+  });
+
+  const dailyPoints = dailyPointsData ? Number(dailyPointsData) : 10;
+  const consecutiveBonus = consecutiveBonusData
+    ? Number(consecutiveBonusData)
+    : 5;
 
   useEffect(() => {
     const initFrame = async () => {
       try {
         await sdk.actions.ready();
         await sdk.actions.addFrame();
+        setIsFrameLoaded(true);
       } catch (err) {
         console.error("Failed to initialize Frame:", err);
       }
     };
     initFrame();
   }, []);
+
+  const handleSaveFrame = async () => {
+    if (!isFrameLoaded) return;
+
+    try {
+      // 尝试添加 Frame 到 Farcaster 客户端
+      await sdk.actions.addFrame();
+      setIsSaved(true);
+    } catch (err) {
+      console.error("Failed to add frame to Farcaster:", err);
+    }
+  };
 
   const renderStreakIndicators = () => {
     const consecutiveDays = Number(userInfo?.consecutiveCheckIns || 0);
@@ -38,7 +75,9 @@ export default function CheckIn() {
             }
           >
             {day}
-            {day % 3 === 0 && <div className="day-bonus">+{day * 5}</div>}
+            {day % 3 === 0 && (
+              <div className="day-bonus">+{day * consecutiveBonus}</div>
+            )}
           </div>
         ))}
       </div>
@@ -60,11 +99,28 @@ export default function CheckIn() {
 
       <CheckInButton />
 
+      {isFrameLoaded && (
+        <button
+          onClick={handleSaveFrame}
+          disabled={isSaved}
+          className={`mt-4 px-4 py-2 rounded-md ${
+            isSaved
+              ? "bg-gray-300 text-gray-500"
+              : "bg-blue-500 text-white hover:bg-blue-600"
+          }`}
+        >
+          {isSaved ? "已保存至Farcaster" : "保存至Farcaster"}
+        </button>
+      )}
+
       <div className="mt-12 space-y-3 w-full">
         <h2 className="text-xl font-bold mb-2 text-gray-800">How It Works</h2>
-        <p className="text-gray-600">Check in daily to earn 10 base points</p>
         <p className="text-gray-600">
-          Earn streak bonus: day × 5 points (Day 3 = +15 bonus)
+          Check in daily to earn {dailyPoints} base points
+        </p>
+        <p className="text-gray-600">
+          Earn streak bonus: day × {consecutiveBonus} points (Day 3 = +
+          {3 * consecutiveBonus} bonus)
         </p>
         <p className="text-gray-600">
           Redeem points for WrapAI rewards in the Rewards tab

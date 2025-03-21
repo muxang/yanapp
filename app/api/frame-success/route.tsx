@@ -1,128 +1,167 @@
-import { ImageResponse } from "next/og";
-import { NextRequest } from "next/server";
-
-export const runtime = "edge";
+import { NextRequest, NextResponse } from "next/server";
+import satori from "satori";
+import * as React from "react";
+import { join } from "path";
+import * as fs from "fs";
 
 export async function GET(req: NextRequest) {
-  // 获取URL参数
-  const searchParams = req.nextUrl.searchParams;
-  const points = searchParams.get("points") || "10";
-  const streak = searchParams.get("streak") || "1";
-  const fid = searchParams.get("fid") || "unknown";
+  try {
+    // 从URL参数中获取数据
+    const url = new URL(req.url);
+    const points = url.searchParams.get("points") || "0";
+    const streak = url.searchParams.get("streak") || "0";
+    const fid = url.searchParams.get("fid") || "未知";
 
-  // 可以尝试根据FID获取更多用户信息
-  // 这里简单地使用FID作为标识符
-  const userInfo = `FID: ${fid}`;
+    // 加载字体
+    const fontPath = join(process.cwd(), "public", "fonts", "inter-normal.ttf");
+    const fontData = fs.readFileSync(fontPath);
 
-  return new ImageResponse(
-    (
+    const pointsNum = parseInt(points, 10);
+    const streakNum = parseInt(streak, 10);
+
+    // 使用satori生成SVG
+    const svg = await satori(
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
           width: "100%",
           height: "100%",
-          background: "linear-gradient(to bottom, #065f46, #064e3b)",
-          padding: "40px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#142B44",
+          backgroundImage: "linear-gradient(to bottom right, #142B44, #1F3E5A)",
+          fontFamily: '"Inter"',
           color: "white",
-          fontFamily: "Inter, sans-serif",
+          padding: "40px",
         }}
       >
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
             justifyContent: "center",
-            textAlign: "center",
-            width: "100%",
+            alignItems: "center",
+            marginBottom: "20px",
           }}
         >
           <div
             style={{
-              fontSize: "40px",
-              fontWeight: "bold",
-              marginBottom: "20px",
-              color: "#4ade80",
+              width: "80px",
+              height: "80px",
+              backgroundColor: "#4CAF50",
+              borderRadius: "50%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginRight: "20px",
             }}
           >
-            Check-in Success!
+            <svg width="42" height="42" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"
+                fill="white"
+              />
+            </svg>
           </div>
+          <div>
+            <h1 style={{ margin: 0, fontSize: "32px", fontWeight: "bold" }}>
+              签到成功!
+            </h1>
+          </div>
+        </div>
 
+        <div
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            borderRadius: "20px",
+            padding: "30px",
+            width: "90%",
+            marginTop: "20px",
+          }}
+        >
           <div
             style={{
-              fontSize: "22px",
-              marginBottom: "10px",
-              maxWidth: "80%",
-              textAlign: "center",
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "15px",
             }}
           >
-            {userInfo}
-          </div>
-
-          <div
-            style={{
-              fontSize: "24px",
-              marginBottom: "40px",
-              maxWidth: "80%",
-              textAlign: "center",
-            }}
-          >
-            You earned {points} points
-            {Number(streak) > 1 ? ` with a ${streak}-day streak` : ""}!
+            <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+              今日获得积分:
+            </div>
+            <div
+              style={{ fontWeight: "bold", fontSize: "24px", color: "#4CAF50" }}
+            >
+              +{pointsNum}
+            </div>
           </div>
 
           <div
             style={{
               display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "20px",
-              marginTop: "20px",
+              justifyContent: "space-between",
+              marginBottom: "20px",
             }}
           >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                padding: "20px",
-                background: "rgba(255, 255, 255, 0.1)",
-                borderRadius: "12px",
-              }}
-            >
-              <div style={{ fontSize: "36px", fontWeight: "bold" }}>
-                {points}
-              </div>
-              <div style={{ fontSize: "18px" }}>Points Earned</div>
+            <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+              连续签到:
             </div>
-
             <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                padding: "20px",
-                background: "rgba(255, 255, 255, 0.1)",
-                borderRadius: "12px",
-              }}
+              style={{ fontWeight: "bold", fontSize: "24px", color: "#FF9800" }}
             >
-              <div style={{ fontSize: "36px", fontWeight: "bold" }}>
-                {streak}
-              </div>
-              <div style={{ fontSize: "18px" }}>
-                Day{Number(streak) > 1 ? "s" : ""} Streak
-              </div>
+              {streakNum} {streakNum === 1 ? "天" : "天"}
             </div>
           </div>
+
+          <div
+            style={{
+              backgroundColor: "rgba(255, 255, 255, 0.15)",
+              borderRadius: "10px",
+              padding: "15px",
+              fontSize: "16px",
+            }}
+          >
+            {streakNum > 1
+              ? `连续签到${streakNum}天！继续保持可获得更多奖励！`
+              : "开始你的签到之旅！每天签到可以积累更多奖励。"}
+          </div>
         </div>
-      </div>
-    ),
-    {
-      width: 1200,
-      height: 630,
-    }
-  );
+
+        <div
+          style={{
+            position: "absolute",
+            bottom: "20px",
+            right: "20px",
+            fontSize: "14px",
+            opacity: 0.7,
+          }}
+        >
+          WrapAI Check-in | FID: {fid}
+        </div>
+      </div>,
+      {
+        width: 600,
+        height: 400,
+        fonts: [
+          {
+            name: "Inter",
+            data: fontData,
+            weight: 400,
+            style: "normal",
+          },
+        ],
+      }
+    );
+
+    // 将SVG转换为PNG（这里实际返回的是SVG）
+    return new NextResponse(svg, {
+      headers: {
+        "Content-Type": "image/svg+xml",
+        "Cache-Control": "max-age=10",
+      },
+    });
+  } catch (error) {
+    console.error("生成成功图像时出错:", error);
+    return new NextResponse("Error generating image", { status: 500 });
+  }
 }

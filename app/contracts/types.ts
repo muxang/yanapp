@@ -1,5 +1,6 @@
 export interface UserInfo {
   lastCheckIn: bigint;
+  lastCheckInDayId: bigint;
   consecutiveCheckIns: bigint;
   totalPoints: bigint;
   totalCheckIns: bigint;
@@ -7,8 +8,10 @@ export interface UserInfo {
 
 export interface CheckInEvent {
   user: `0x${string}`;
-  points: bigint;
+  pointsEarned: bigint;
   consecutiveCheckIns: bigint;
+  timestamp: bigint;
+  dayId: bigint;
 }
 
 export interface Reward {

@@ -62,15 +62,9 @@ export function useUserInfo(address?: `0x${string}`) {
     } as const;
   }
 
-  const [lastCheckIn, consecutiveCheckIns, totalPoints, totalCheckIns] = data;
-
+  // 新的合约返回一个单一的 UserInfo 结构
   return {
-    userInfo: {
-      lastCheckIn,
-      consecutiveCheckIns,
-      totalPoints,
-      totalCheckIns,
-    } satisfies UserInfo,
+    userInfo: data as UserInfo,
     isLoading,
     refetch,
   } as const;
