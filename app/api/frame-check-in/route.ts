@@ -21,25 +21,25 @@ interface FrameMessage {
 // Handler for GET requests - required for initial frame loading
 export async function GET(req: NextRequest): Promise<NextResponse> {
   return new NextResponse(
-    `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta property="fc:frame" content="vNext" />
-        <meta property="fc:frame:image" content="${baseUrl}/images/wrapai-banner.png" />
-        <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
-        <meta property="fc:frame:button:1" content="Enter Mini App" />
-        <meta property="fc:frame:button:1:action" content="post_redirect" />
-        <meta property="fc:frame:button:1:target" content="${warpcastFrameUrl}" />
-        <meta property="fc:frame:image:link" content="${warpcastFrameUrl}" />
-        <meta property="fc:frame:post_url" content="${baseUrl}/api/frame-check-in" />
-        <title>WrapAI Check-in System</title>
-      </head>
-      <body>
-        <p>WrapAI Daily Check-in System</p>
-      </body>
-    </html>
-    `,
+    `<!DOCTYPE html>
+<html>
+  <head>
+    <title>WrapAI Check-in System</title>
+    <meta property="fc:frame" content="vNext" />
+    <meta property="fc:frame:image" content="${baseUrl}/images/wrapai-banner.png" />
+    <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
+    <meta property="fc:frame:button:1" content="Enter Mini App" />
+    <meta property="fc:frame:button:1:action" content="post_redirect" />
+    <meta property="fc:frame:button:1:target" content="${warpcastFrameUrl}" />
+    <meta property="fc:frame:post_url" content="${baseUrl}/api/frame-check-in" />
+    <meta property="og:image" content="${baseUrl}/images/wrapai-banner.png" />
+    <meta property="og:title" content="WrapAI Check-in System" />
+    <meta property="og:description" content="Earn points through daily check-ins and redeem for Web3 rewards" />
+  </head>
+  <body>
+    <p>WrapAI Daily Check-in System</p>
+  </body>
+</html>`,
     {
       status: 200,
       headers: {
@@ -54,9 +54,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const body = (await req.json()) as FrameMessage;
 
     // Validate basic frame message
-    // if (!body || !body.untrustedData) {
-    //   return generateErrorResponse("Invalid request format");
-    // }
+    if (!body || !body.untrustedData) {
+      return generateErrorResponse("Invalid request format");
+    }
 
     // Any button click should redirect to the app
     return new NextResponse(null, {
@@ -74,22 +74,23 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 // Helper function to generate error response
 function generateErrorResponse(message: string): NextResponse {
   return new NextResponse(
-    `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta property="fc:frame" content="vNext" />
-        <meta property="fc:frame:image" content="${baseUrl}/api/frame-error" />
-        <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
-        <meta property="fc:frame:button:1" content="Enter Mini App" />
-        <meta property="fc:frame:button:1:action" content="post_redirect" />
-        <meta property="fc:frame:button:1:target" content="${warpcastFrameUrl}" />
-        <meta property="fc:frame:image:link" content="${warpcastFrameUrl}" />
-        <meta property="fc:frame:post_url" content="${baseUrl}/api/frame-check-in" />
-      </head>
-      <body>${message}</body>
-    </html>
-    `,
+    `<!DOCTYPE html>
+<html>
+  <head>
+    <title>WrapAI - Error</title>
+    <meta property="fc:frame" content="vNext" />
+    <meta property="fc:frame:image" content="${baseUrl}/api/frame-error" />
+    <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
+    <meta property="fc:frame:button:1" content="Enter Mini App" />
+    <meta property="fc:frame:button:1:action" content="post_redirect" />
+    <meta property="fc:frame:button:1:target" content="${warpcastFrameUrl}" />
+    <meta property="fc:frame:post_url" content="${baseUrl}/api/frame-check-in" />
+    <meta property="og:image" content="${baseUrl}/api/frame-error" />
+    <meta property="og:title" content="WrapAI - Error" />
+    <meta property="og:description" content="${message}" />
+  </head>
+  <body>${message}</body>
+</html>`,
     {
       status: 400,
       headers: {

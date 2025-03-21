@@ -60,7 +60,6 @@ export default function RootLayout({
         <meta property="fc:frame:button:1" content="Enter Mini App" />
         <meta property="fc:frame:button:1:action" content="post_redirect" />
         <meta property="fc:frame:button:1:target" content={warpcastFrameUrl} />
-        <meta property="fc:frame:image:link" content={warpcastFrameUrl} />
         <meta
           property="fc:frame:post_url"
           content={`${baseUrl}/api/frame-check-in`}
