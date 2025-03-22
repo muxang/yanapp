@@ -16,12 +16,10 @@ interface CheckInButtonProps {
     consecutiveDays: number;
     isConsecutive: boolean;
   }) => void;
-  onShareClick?: () => void;
 }
 
 export const CheckInButton: React.FC<CheckInButtonProps> = ({
   onCheckInSuccess,
-  onShareClick,
 }) => {
   const { isConnected } = useAccount();
   const { checkIn } = useCheckIn();
@@ -108,13 +106,6 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
     }
   };
 
-  // 处理分享按钮点击
-  const handleShareClick = () => {
-    if (onShareClick) {
-      onShareClick();
-    }
-  };
-
   // 检查用户是否可以签到
   const canCheckIn = isConnected && !isHasCheckedInToday;
 
@@ -164,33 +155,6 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
               {formatTimeRemaining()}
             </span>
           </div>
-
-          {/* 分享按钮 */}
-          <div className="mt-4 flex justify-center">
-            <button
-              onClick={handleShareClick}
-              className="share-button"
-              aria-label="Share to Warpcast"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6 text-white"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="18" cy="5" r="3" />
-                <circle cx="6" cy="12" r="3" />
-                <circle cx="18" cy="19" r="3" />
-                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-              </svg>
-              <span className="share-button-text text-white">Share</span>
-            </button>
-          </div>
         </div>
       </div>
     );
@@ -198,14 +162,6 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
 
   return (
     <div className="mt-4 w-full">
-      {/* Debug button */}
-      <button
-        onClick={handleShareClick}
-        className="mb-4 px-3 py-1 bg-red-500 text-white rounded text-xs"
-      >
-        Debug: Open Share Dialog
-      </button>
-
       {error && <div className="error-text">{error}</div>}
 
       {showTip ? (
@@ -282,34 +238,6 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
             </div>
           )}
         </>
-      )}
-
-      {/* 显示分享按钮 */}
-      {showShareButton && (
-        <div className="flex flex-col items-center">
-          <button
-            onClick={handleShareClick}
-            className="w-14 h-14 bg-blue-500 rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors duration-200"
-            aria-label="Share to Warpcast"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 text-white"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="18" cy="5" r="3" />
-              <circle cx="6" cy="12" r="3" />
-              <circle cx="18" cy="19" r="3" />
-              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-            </svg>
-          </button>
-        </div>
       )}
     </div>
   );
