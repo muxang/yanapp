@@ -804,6 +804,99 @@ main {
   letter-spacing: 0.2px;
 }
 
+/* Share Dialog Styles */
+.share-dialog-backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.share-dialog {
+  animation: dialogSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: bottom center;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.share-dialog-header {
+  position: relative;
+  overflow: hidden;
+}
+
+.share-dialog-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+}
+
+.share-dialog-content {
+  overflow: hidden;
+}
+
+.share-button-primary {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.share-button-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.share-button-primary:hover::before {
+  transform: translateX(100%);
+}
+
+.share-button-secondary {
+  transition: all 0.2s ease;
+}
+
+.share-button-secondary:hover {
+  color: var(--text-primary);
+}
+
+.share-dialog-streak {
+  position: relative;
+  animation: pulseStreak 1s ease-in-out;
+}
+
+@keyframes dialogSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pulseStreak {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 /* Splash Screen Styles */
 .splash-screen {
   position: fixed;
