@@ -50,16 +50,21 @@ export const ShareDialog: React.FC<ShareDialogProps> = ({
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center z-[9999]"
+      className="fixed inset-0 z-[9999] overflow-auto"
       style={{
         backgroundColor: "rgba(0, 0, 0, 0.5)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-3xl max-w-sm w-[90%] overflow-hidden shadow-xl animate-fade-in"
+        className="my-8 bg-white rounded-3xl max-w-sm w-[90%] overflow-hidden shadow-xl"
         style={{
           boxShadow: "0 10px 25px rgba(0, 0, 0, 0.2)",
+          transform: "translateY(0)",
+          margin: "auto",
         }}
         onClick={(e) => e.stopPropagation()}
       >
