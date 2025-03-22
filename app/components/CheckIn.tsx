@@ -8,14 +8,23 @@ import { useReadContract } from "wagmi";
 import { CHECK_IN_ABI } from "../contracts/abi";
 import { getContractConfig } from "../contracts/config";
 import { config as wagmiConfig } from "./providers/WagmiProvider";
-
+import { useShareDialog } from "../context/ShareDialogContext";
 import sdk from "@farcaster/frame-sdk";
 
+// 定义数据类型
+interface CheckInSuccessData {
+  earnedPoints: number;
+  consecutiveDays: number;
+  isConsecutive: boolean;
+}
+
 export default function CheckIn() {
-  const { isConnected } = useAccount();
-  const { userInfo } = useUserInfo();
+  const { isConnected, address } = useAccount();
+  const { userInfo, refetch } = useUserInfo();
   const [isFrameLoaded, setIsFrameLoaded] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const { openShareDialog, closeShareDialog } = useShareDialog();
+
   const config = getContractConfig();
   const { connect } = useConnect();
 
@@ -49,6 +58,35 @@ export default function CheckIn() {
     };
     initFrame();
   }, []);
+
+  // 处理CheckInButton组件的成功签到
+  const handleCheckInSuccess = (data: CheckInSuccessData) => {
+    console.log("Check-in success data received:", data);
+
+    // 准备分享数据
+    const shareData = {
+      earnedPoints: data.earnedPoints || 200,
+      consecutiveDays:
+        data.consecutiveDays || Number(userInfo?.consecutiveCheckIns || 0),
+      totalPoints:
+        Number(userInfo?.totalPoints || 0) + (data.earnedPoints || 200),
+    };
+
+    // 自动显示分享对话框
+    setTimeout(() => {
+      refetch(); // 刷新用户数据
+      openShareDialog(shareData);
+    }, 500);
+  };
+
+  // 打开分享对话框
+  const handleShareClick = () => {
+    openShareDialog({
+      earnedPoints: 200, // 默认展示值
+      consecutiveDays: Number(userInfo?.consecutiveCheckIns || 0),
+      totalPoints: Number(userInfo?.totalPoints || 0) + 200,
+    });
+  };
 
   const renderStreakIndicators = () => {
     const consecutiveDays = Number(userInfo?.consecutiveCheckIns || 0);
@@ -91,7 +129,10 @@ export default function CheckIn() {
       <h1 className="text-2xl font-bold mb-6 text-gray-800">Daily Check-in</h1>
       {renderStreakIndicators()}
 
-      <CheckInButton />
+      <CheckInButton
+        onCheckInSuccess={handleCheckInSuccess}
+        onShareClick={handleShareClick}
+      />
 
       <div className="mt-12 space-y-3 w-full">
         <h2 className="text-xl font-bold mb-2 text-gray-800">How It Works</h2>
