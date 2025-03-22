@@ -6,6 +6,7 @@ import { useUserInfo } from "./hooks/useContract";
 import CheckIn from "./components/CheckIn";
 import Splash from "./components/Splash";
 import { StatsDisplay } from "./components/StatsDisplay";
+import sdk from "@farcaster/frame-sdk";
 import Link from "next/link";
 
 export default function Home() {
@@ -37,6 +38,35 @@ export default function Home() {
     }, 500);
   };
 
+  // 分享到Warpcast
+  const shareToWarpcast = () => {
+    // 设置基础URL
+    let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
+    // 确保URL有https://前缀
+    if (
+      typeof baseUrl === "string" &&
+      !baseUrl.startsWith("http://") &&
+      !baseUrl.startsWith("https://")
+    ) {
+      baseUrl = "https://" + baseUrl;
+    }
+
+    const earnedPoints = 200; // 默认值
+    // 使用应用主URL但附加积分和连续签到天数作为查询参数
+    const shareUrl = `${baseUrl}?points=${earnedPoints}&streak=${consecutiveDays}`;
+
+    // 构建分享文本
+    const shareText = `🎯 Just completed my ${consecutiveDays}-day check-in streak on WrapAI! Earned ${earnedPoints} points today.`;
+
+    // 创建Warpcast分享URL - 分享应用主URL并带有查询参数
+    const warpcastUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(
+      shareText
+    )}&embeds[]=${encodeURIComponent(shareUrl)}`;
+
+    // 使用Farcaster SDK打开URL
+    sdk.actions.openUrl(warpcastUrl);
+  };
+
   return (
     <>
       <div className="app-container">
@@ -51,7 +81,13 @@ export default function Home() {
             <header className="page-header">
               <h1 className="header-title">WrapAI</h1>
               <p className="header-subtitle">Web3 AI Points System</p>
-              <div className="points-badge">
+
+              {/* 分享按钮替代Points显示 */}
+              <button
+                onClick={shareToWarpcast}
+                className="points-badge"
+                aria-label="Share to Warpcast"
+              >
                 <svg
                   width="16"
                   height="16"
@@ -60,12 +96,15 @@ export default function Home() {
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                    fill="currentColor"
+                    d="M18 8C19.6569 8 21 6.65685 21 5C21 3.34315 19.6569 2 18 2C16.3431 2 15 3.34315 15 5C15 5.12548 15.0077 5.24917 15.0227 5.37061L8.08261 9.18838C7.54308 8.46953 6.78914 8 5.93558 8C4.31104 8 3 9.31104 3 10.9356C3 12.5601 4.31104 13.8711 5.93558 13.8711C6.78914 13.8711 7.54308 13.4016 8.08261 12.6827L15.0227 16.5005C15.0077 16.6219 15 16.7456 15 16.8711C15 18.5279 16.3431 19.8711 18 19.8711C19.6569 19.8711 21 18.5279 21 16.8711C21 15.2142 19.6569 13.8711 18 13.8711C17.1464 13.8711 16.3925 14.3406 15.853 15.0595L8.91289 11.2416C8.92786 11.1202 8.93558 10.9965 8.93558 10.8711C8.93558 10.7456 8.92786 10.6219 8.91289 10.5005L15.853 6.68273C16.3925 7.40158 17.1464 7.87113 18 7.87113"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                 </svg>
-                <span>{totalPoints} Points</span>
-              </div>
+                <span>Share</span>
+              </button>
             </header>
 
             <main className="animate-fade-in pb-20">
