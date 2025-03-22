@@ -6,11 +6,11 @@ export const runtime = "edge";
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const points = searchParams.get("points") || "10";
+    const username = searchParams.get("username") || "WrapAI User";
     const streak = searchParams.get("streak") || "1";
-    const fid = searchParams.get("fid") || "0";
+    const points = searchParams.get("points") || "10";
 
-    // 构建成功图片
+    // 构建分享图片
     return new ImageResponse(
       (
         <div
@@ -21,12 +21,13 @@ export async function GET(request: NextRequest) {
             justifyContent: "center",
             width: "100%",
             height: "100%",
-            background: "linear-gradient(to bottom right, #4f46e5, #7c3aed)",
+            background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
             padding: "40px",
             color: "white",
             fontFamily: "sans-serif",
           }}
         >
+          {/* Logo and Title */}
           <div
             style={{
               display: "flex",
@@ -68,10 +69,11 @@ export async function GET(request: NextRequest) {
                 margin: "0",
               }}
             >
-              WrapAI Check-in
+              WrapAI
             </h1>
           </div>
 
+          {/* User Achievement */}
           <div
             style={{
               display: "flex",
@@ -94,10 +96,18 @@ export async function GET(request: NextRequest) {
                 textAlign: "center",
               }}
             >
-              {Number(streak) > 1
-                ? `${streak}-Day Streak! 🔥`
-                : "Check-in Complete! ✅"}
+              {username}'s Achievement
             </h2>
+            <p
+              style={{
+                fontSize: "28px",
+                marginBottom: "20px",
+                textAlign: "center",
+              }}
+            >
+              <span style={{ fontWeight: "bold" }}>{streak}-Day</span> Check-in
+              Streak!
+            </p>
             <p
               style={{
                 fontSize: "28px",
@@ -108,19 +118,30 @@ export async function GET(request: NextRequest) {
               Earned <span style={{ fontWeight: "bold" }}>{points} points</span>{" "}
               today
             </p>
-            {Number(streak) > 1 && (
-              <p
-                style={{
-                  fontSize: "22px",
-                  opacity: 0.9,
-                  textAlign: "center",
-                }}
-              >
-                Keep the streak going for bigger rewards!
-              </p>
-            )}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop: "20px",
+              }}
+            >
+              {/* Streak Fire Icons */}
+              {[...Array(Math.min(Number(streak), 5))].map((_, i) => (
+                <div
+                  key={i}
+                  style={{
+                    margin: "0 8px",
+                    fontSize: "36px",
+                  }}
+                >
+                  🔥
+                </div>
+              ))}
+            </div>
           </div>
 
+          {/* Footer */}
           <div
             style={{
               fontSize: "20px",
@@ -144,7 +165,7 @@ export async function GET(request: NextRequest) {
               <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
               <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
             </svg>
-            <span>wrapai.app</span>
+            <span>wrapai.app | Web3 AI Points System</span>
           </div>
         </div>
       ),
@@ -154,7 +175,7 @@ export async function GET(request: NextRequest) {
       }
     );
   } catch (error) {
-    console.error("Error generating success image:", error);
+    console.error("Error generating share image:", error);
     return new Response("Failed to generate image", { status: 500 });
   }
 }

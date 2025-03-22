@@ -13,9 +13,14 @@ export async function generateMetadata({
   const streak =
     typeof searchParams.streak === "string" ? searchParams.streak : "0";
 
+  const userName =
+    typeof searchParams.userName === "string"
+      ? searchParams.userName
+      : "WrapAi User";
+
   const imageUrl =
     Number(points) > 0
-      ? `${baseUrl}/api/og-image?points=${points}&streak=${streak}`
+      ? `${baseUrl}/api/og-image?points=${points}&streak=${streak}&userName=${userName}`
       : `${baseUrl}/images/wrapai-banner.png`;
 
   const frame = {

@@ -102,16 +102,14 @@ export default function Home() {
     // 构建包含用户名的分享文本
     const shareText = `🎯 ${userName} just completed a ${consecutiveDays}-day check-in streak on WrapAI! Earned ${earnedPoints} points today. #WrapAI #Web3`;
 
+    const shareUrl = `${baseUrl}?points=${earnedPoints}&streak=${consecutiveDays}&userName=${userName}`;
+
     // 构建图片URL - 使用动态图片生成服务
-    // 添加用户名到图片生成参数
-    const imageUrl = `${baseUrl}/api/share-image?username=${encodeURIComponent(
-      userName
-    )}&streak=${consecutiveDays}&points=${earnedPoints}`;
 
     // 创建Warpcast分享URL - 使用自定义图片
     const warpcastUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(
       shareText
-    )}&embeds[]=${encodeURIComponent(imageUrl)}`;
+    )}&embeds[]=${encodeURIComponent(shareUrl)}`;
 
     // 使用Farcaster SDK打开URL
     sdk.actions.openUrl(warpcastUrl);
