@@ -113,6 +113,7 @@ export const CheckInButton = () => {
       shareText
     )}&embeds[]=${encodeURIComponent(shareUrl)}`;
 
+    // 使用Farcaster SDK打开URL
     sdk.actions.openUrl(warpcastUrl);
   };
 
