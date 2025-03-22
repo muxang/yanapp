@@ -6,13 +6,36 @@ export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     // 设置基础URL，优先使用环境变量
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://wrapai.app";
+    let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "wrapai.app";
+    // 确保URL有https://前缀
+    if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
+      baseUrl = "https://" + baseUrl;
+    }
 
     // 获取请求数据
     const body = await request.json();
     // 获取用户信息
     const { untrustedData } = body;
     const fid = untrustedData?.fid || "0";
+
+    // 使用logo作为splash图片
+    const splashImageUrl = `${baseUrl}/logo-large.png`;
+
+    // 严格按照layout.tsx中的方式创建frame对象
+    const frame = {
+      version: "next",
+      imageUrl: `${baseUrl}/images/wrapai-banner.png`,
+      button: {
+        title: "Open App",
+        action: {
+          type: "launch_frame",
+          name: "WrapAI | Daily Check-in System",
+          url: baseUrl,
+          splashImageUrl: splashImageUrl,
+          splashBackgroundColor: "#142B44",
+        },
+      },
+    };
 
     // 准备HTML响应，包括必要的元标签
     const html = `
@@ -22,20 +45,11 @@ export async function POST(request: NextRequest) {
           <title>WrapAI Check-in</title>
           <meta property="og:title" content="WrapAI Check-in System" />
           <meta property="og:image" content="${baseUrl}/images/wrapai-banner.png" />
-          <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content="${baseUrl}/images/wrapai-banner.png" />
-          <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
-          <meta property="fc:frame:button:1" content="Open App" />
-          <meta property="fc:frame:button:1:action" content="post_redirect" />
-          <meta property="fc:frame:button:1:target" content="${baseUrl}" />
-          <meta property="fc:frame:post_url" content="${baseUrl}/api/frame-check-in" />
+          <meta property="fc:frame" content="${JSON.stringify(frame)}" />
         </head>
         <body>
-          <p>Thanks for sharing your WrapAI Check-in!</p>
-          <script>
-            // 重定向到应用首页
-            window.location.href = "${baseUrl}";
-          </script>
+          <div>
+          </div>
         </body>
       </html>
     `;

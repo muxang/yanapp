@@ -81,7 +81,17 @@ export const CheckInButton = () => {
 
   // 分享到Warpcast
   const shareToWarpcast = () => {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
+    // 设置基础URL
+    let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
+    // 确保URL有https://前缀
+    if (
+      typeof baseUrl === "string" &&
+      !baseUrl.startsWith("http://") &&
+      !baseUrl.startsWith("https://")
+    ) {
+      baseUrl = "https://" + baseUrl;
+    }
+
     // 构建分享URL，指向支持Farcaster Frame V2规范的端点
     const shareUrl = `${baseUrl}/api/frame-success?points=${
       earnedPoints || 10
@@ -104,7 +114,7 @@ export const CheckInButton = () => {
     )}&embeds[]=${encodeURIComponent(shareUrl)}`;
 
     // 打开Warpcast
-    sdk.actions.openUrl(warpcastUrl);
+    window.open(warpcastUrl, "_blank");
   };
 
   // 检查用户是否可以签到
@@ -157,10 +167,10 @@ export const CheckInButton = () => {
             </span>
           </div>
 
-          {/* 添加分享按钮，即使已经签到过 */}
+          {/* 修改分享按钮，使其样式与签到按钮一致 */}
           <button
             onClick={shareToWarpcast}
-            className="mt-4 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-md flex items-center"
+            className="check-in-button mt-4 flex items-center justify-center"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -262,7 +272,7 @@ export const CheckInButton = () => {
         <div className="mt-4 flex justify-center">
           <button
             onClick={shareToWarpcast}
-            className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-md flex items-center"
+            className="check-in-button flex items-center justify-center"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
