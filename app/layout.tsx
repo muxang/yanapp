@@ -26,7 +26,7 @@ const frame = {
   version: "next",
   imageUrl: `${baseUrl}/images/wrapai-banner.png`,
   button: {
-    title: "Enter Mini App",
+    title: "Check In Now",
     action: {
       type: "launch_frame",
       name: "WrapAI | Daily Check-in System",

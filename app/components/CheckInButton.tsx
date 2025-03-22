@@ -19,16 +19,18 @@ export const CheckInButton = () => {
   const [earnedPoints, setEarnedPoints] = useState<number | null>(null);
   const [isConsecutive, setIsConsecutive] = useState(false);
   const [showTip, setShowTip] = useState(false);
+  const [showShareButton, setShowShareButton] = useState(false);
 
   const { isHasCheckedInToday, isLoading: isCheckStatusLoading } =
     useHasCheckedInToday();
 
-  // 成功后的刷新逻辑
+  // 成功后的逻辑
   useEffect(() => {
     if (success) {
       setShowTip(true);
       const timer = setTimeout(() => {
         setShowTip(false);
+        setShowShareButton(true); // 显示分享按钮
         refetch();
       }, 2500);
       return () => clearTimeout(timer);
@@ -42,6 +44,7 @@ export const CheckInButton = () => {
       setIsLoading(true);
       setError(null);
       setSuccess(false);
+      setShowShareButton(false);
 
       // 根据当前的Day ID检查是否是连续签到
       const currentDayId = Math.floor(Date.now() / 86400);
@@ -74,6 +77,34 @@ export const CheckInButton = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // 分享到Warpcast
+  const shareToWarpcast = () => {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
+    // 构建分享URL，指向支持Farcaster Frame V2规范的端点
+    const shareUrl = `${baseUrl}/api/frame-success?points=${
+      earnedPoints || 10
+    }&streak=${Number(userInfo?.consecutiveCheckIns || 0)}&fid=0`;
+
+    // 构建分享文本
+    const shareText = isConsecutive
+      ? `🎯 Just completed my ${Number(
+          userInfo?.consecutiveCheckIns || 0
+        )}-day check-in streak on WrapAI! Earned ${
+          earnedPoints || 10
+        } points today.`
+      : `✅ Just checked in on WrapAI! Earned ${
+          earnedPoints || 10
+        } points today.`;
+
+    // 创建Warpcast分享URL - 直接分享Frame URL
+    const warpcastUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(
+      shareText
+    )}&embeds[]=${encodeURIComponent(shareUrl)}`;
+
+    // 打开Warpcast
+    sdk.actions.openUrl(warpcastUrl);
   };
 
   // 检查用户是否可以签到
@@ -125,6 +156,22 @@ export const CheckInButton = () => {
               {formatTimeRemaining()}
             </span>
           </div>
+
+          {/* 添加分享按钮，即使已经签到过 */}
+          <button
+            onClick={shareToWarpcast}
+            className="mt-4 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-md flex items-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 mr-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+            </svg>
+            Share to Warpcast
+          </button>
         </div>
       </div>
     );
@@ -156,12 +203,32 @@ export const CheckInButton = () => {
             </div>
           </div>
         </div>
-      ) : success ? (
-        <div className="flex justify-center my-2">
-          <div className="loading-indicator">
-            <span className="dot"></span>
-            <span className="dot"></span>
-            <span className="dot"></span>
+      ) : success && !showShareButton ? (
+        <div className="check-in-success flex flex-col items-center justify-center my-2">
+          <div className="w-28 h-28 rounded-full bg-green-50 flex items-center justify-center mb-1">
+            <svg
+              className="w-16 h-16 text-green-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              strokeWidth="1"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M5 13l4 4L19 7"
+              ></path>
+            </svg>
+          </div>
+          <div className="text-sm text-gray-700 mb-1">
+            Today's check-in complete!
+          </div>
+          <div className="text-xs text-gray-500">
+            Next check-in available in{" "}
+            <span className="font-medium text-primary">
+              {formatTimeRemaining()}
+            </span>
           </div>
         </div>
       ) : (
@@ -188,6 +255,26 @@ export const CheckInButton = () => {
             </div>
           )}
         </>
+      )}
+
+      {/* 显示分享按钮 */}
+      {showShareButton && (
+        <div className="mt-4 flex justify-center">
+          <button
+            onClick={shareToWarpcast}
+            className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-md flex items-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 mr-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+            </svg>
+            Share to Warpcast
+          </button>
+        </div>
       )}
     </div>
   );
