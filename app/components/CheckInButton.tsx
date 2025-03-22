@@ -167,21 +167,31 @@ export const CheckInButton = () => {
             </span>
           </div>
 
-          {/* 修改分享按钮，使其更小，内部包含分享图标 */}
-          <button
-            onClick={shareToWarpcast}
-            className="inline-flex items-center justify-center px-4 py-2 mt-4 bg-indigo-500 hover:bg-indigo-600 text-white rounded-full text-sm"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 mr-2"
-              viewBox="0 0 20 20"
-              fill="currentColor"
+          {/* 修改分享按钮，使用蓝色背景 */}
+          <div className="mt-4 flex justify-center">
+            <button
+              onClick={shareToWarpcast}
+              className="w-[62px] h-[62px] bg-blue-500 border border-blue-600 flex flex-col items-center justify-center rounded-md"
             >
-              <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
-            </svg>
-            Share to Warpcast
-          </button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 text-white mb-1"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="18" cy="5" r="3" />
+                <circle cx="6" cy="12" r="3" />
+                <circle cx="18" cy="19" r="3" />
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+              </svg>
+              <span className="text-[10px] text-white">Share</span>
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -267,22 +277,30 @@ export const CheckInButton = () => {
         </>
       )}
 
-      {/* 显示分享按钮 - 更小的设计 */}
+      {/* 显示分享按钮 - 蓝色背景 */}
       {showShareButton && (
         <div className="mt-4 flex justify-center">
           <button
             onClick={shareToWarpcast}
-            className="inline-flex items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-full text-sm"
+            className="w-[62px] h-[62px] bg-blue-500 border border-blue-600 flex flex-col items-center justify-center rounded-md"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 mr-2"
-              viewBox="0 0 20 20"
-              fill="currentColor"
+              className="h-6 w-6 text-white mb-1"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
-              <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+              <circle cx="18" cy="5" r="3" />
+              <circle cx="6" cy="12" r="3" />
+              <circle cx="18" cy="19" r="3" />
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
             </svg>
-            Share to Warpcast
+            <span className="text-[10px] text-white">Share</span>
           </button>
         </div>
       )}
