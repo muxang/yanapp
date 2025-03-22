@@ -1190,3 +1190,34 @@ main {
     transform: scale(1);
   }
 }
+
+/* Share button styles */
+.share-btn {
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.share-btn:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.share-btn:active {
+  transform: translateY(0);
+}
+
+.share-btn .share-icon {
+  margin-right: 6px;
+}
+
+.share-btn span {
+  font-weight: 500;
+}
