@@ -93,7 +93,7 @@ export const CheckInButton = () => {
     }
 
     // 构建分享URL，指向支持Farcaster Frame V2规范的端点
-    const shareUrl = `${baseUrl}/api/frame-share?points=${
+    const shareUrl = `${baseUrl}/api/frame-success?points=${
       earnedPoints || 10
     }&streak=${Number(userInfo?.consecutiveCheckIns || 0)}&fid=0`;
 
