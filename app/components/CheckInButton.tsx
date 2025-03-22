@@ -92,10 +92,10 @@ export const CheckInButton = () => {
       baseUrl = "https://" + baseUrl;
     }
 
-    // 构建分享URL，指向支持Farcaster Frame V2规范的端点
-    const shareUrl = `${baseUrl}/api/frame-success?points=${
-      earnedPoints || 10
-    }&streak=${Number(userInfo?.consecutiveCheckIns || 0)}&fid=0`;
+    // 使用应用主URL但附加积分和连续签到天数作为查询参数
+    const shareUrl = `${baseUrl}?points=${earnedPoints || 10}&streak=${Number(
+      userInfo?.consecutiveCheckIns || 0
+    )}`;
 
     // 构建分享文本
     const shareText = isConsecutive
@@ -108,13 +108,12 @@ export const CheckInButton = () => {
           earnedPoints || 10
         } points today.`;
 
-    // 创建Warpcast分享URL - 直接分享Frame URL
+    // 创建Warpcast分享URL - 分享应用主URL并带有查询参数
     const warpcastUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(
       shareText
     )}&embeds[]=${encodeURIComponent(shareUrl)}`;
 
-    // 打开Warpcast
-    window.open(warpcastUrl, "_blank");
+    sdk.actions.openUrl(warpcastUrl);
   };
 
   // 检查用户是否可以签到

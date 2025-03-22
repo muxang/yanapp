@@ -22,22 +22,37 @@ interface Props {
   }>;
 }
 
-const frame = {
-  version: "next",
-  imageUrl: `${baseUrl}/images/wrapai-banner.png`,
-  button: {
-    title: "Check In Now",
-    action: {
-      type: "launch_frame",
-      name: "WrapAI | Daily Check-in System",
-      url: baseUrl,
-      splashImageUrl: splashImageUrl,
-      splashBackgroundColor: "#142B44",
-    },
-  },
-};
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}): Promise<Metadata> {
+  // 检查是否有查询参数
+  const points = searchParams?.points || "0";
+  const streak = searchParams?.streak || "0";
 
-export async function generateMetadata(): Promise<Metadata> {
+  // 决定使用哪个图片 - 如果有积分信息，使用动态生成的图片，否则使用标准横幅
+  const imageUrl =
+    points && Number(points) > 0
+      ? `${baseUrl}/api/og-image?points=${points}&streak=${streak}`
+      : `${baseUrl}/images/wrapai-banner.png`;
+
+  // 创建frame对象
+  const frame = {
+    version: "next",
+    imageUrl: imageUrl,
+    button: {
+      title: "Check In Now",
+      action: {
+        type: "launch_frame",
+        name: "WrapAI | Daily Check-in System",
+        url: baseUrl,
+        splashImageUrl: splashImageUrl,
+        splashBackgroundColor: "#142B44",
+      },
+    },
+  };
+
   return {
     title: "WrapAI | Daily Check-in System",
     description:
@@ -46,7 +61,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: "WrapAI | Daily Check-in System",
       description:
         "Earn points through daily check-ins and redeem for Web3 rewards",
-      images: [`${baseUrl}/images/wrapai-banner.png`],
+      images: [imageUrl],
     },
     other: {
       "fc:frame": JSON.stringify(frame),
