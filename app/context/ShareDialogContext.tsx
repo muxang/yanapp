@@ -52,12 +52,22 @@ export const ShareDialogProvider: React.FC<ShareDialogProviderProps> = ({
     console.log("Opening share dialog with data:", data);
     setDialogData(data);
     setIsOpen(true);
+
+    // 当打开对话框时，添加modal-open类到body
+    if (typeof document !== "undefined") {
+      document.body.classList.add("modal-open");
+    }
   };
 
   // 关闭分享对话框
   const closeShareDialog = () => {
     console.log("Closing share dialog");
     setIsOpen(false);
+
+    // 当关闭对话框时，移除modal-open类
+    if (typeof document !== "undefined") {
+      document.body.classList.remove("modal-open");
+    }
   };
 
   // 提供上下文值并包含ShareDialog组件
@@ -70,6 +80,8 @@ export const ShareDialogProvider: React.FC<ShareDialogProviderProps> = ({
       }}
     >
       {children}
+
+      {/* ShareDialog组件会使用createPortal直接渲染到body */}
       <ShareDialog
         isOpen={isOpen}
         onClose={closeShareDialog}

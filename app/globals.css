@@ -45,6 +45,40 @@ body {
   animation: slideUp 0.3s ease-out forwards;
 }
 
+/* 添加对话框相关的样式 */
+.modal-open {
+  overflow: hidden;
+}
+
+[role="dialog"] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  position: relative;
+  margin: auto;
+  width: 90%;
+  max-width: 330px;
+  background-color: white;
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+/* 确保其他样式不会影响对话框的位置 */
+#__next, main, .app-container {
+  position: static !important;
+  overflow: visible !important;
+}
+
 .app-container {
   max-width: 480px;
   margin: 0 auto;
