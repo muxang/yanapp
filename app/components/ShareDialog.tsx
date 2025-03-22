@@ -50,61 +50,41 @@ export const ShareDialog: React.FC<ShareDialogProps> = ({
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center z-[9999]"
+      className="fixed inset-0 flex flex-col justify-end z-[9999]"
       style={{
-        backgroundColor: "rgba(0, 0, 0, 0.75)",
-        backdropFilter: "blur(4px)",
-        WebkitBackdropFilter: "blur(4px)",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
       }}
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-3xl w-[90%] max-w-sm overflow-hidden shadow-xl animate-fade-in"
+        className="bg-white rounded-t-3xl w-full overflow-hidden shadow-xl animate-slide-up"
         style={{
-          boxShadow: "0 0 30px rgba(0, 0, 0, 0.3)",
-          animation: "dialogSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+          boxShadow: "0 -4px 20px rgba(0, 0, 0, 0.15)",
+          animation: "slideUp 0.3s ease-out forwards",
+          maxHeight: "85vh",
+          overflowY: "auto",
         }}
         onClick={(e) => e.stopPropagation()}
       >
+        <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto my-3"></div>
+
         <div className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <div className="bg-[#4e7cff] w-12 h-12 rounded-lg flex items-center justify-center mr-3">
-                <svg
-                  className="w-6 h-6 text-white"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-7 2h4v4h-4V5zm0 6h4v4h-4v-4zM6 5h4v4H6V5zm0 6h4v4H6v-4zm0 6h12v2H6v-2z" />
-                </svg>
-              </div>
-              <div>
-                <h3 className="text-[17px] font-bold text-gray-800">
-                  Web3 Check-in
-                </h3>
-                <p className="text-[13px] text-gray-500">Daily Achievement</p>
-              </div>
-            </div>
-            <button
-              onClick={onClose}
-              className="text-gray-500 hover:text-gray-700"
-              aria-label="Close dialog"
-            >
+          <div className="flex items-center">
+            <div className="bg-[#4e7cff] w-12 h-12 rounded-lg flex items-center justify-center mr-3">
               <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
+                className="w-6 h-6 text-white"
                 viewBox="0 0 24 24"
-                stroke="currentColor"
+                fill="currentColor"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
+                <path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-7 2h4v4h-4V5zm0 6h4v4h-4v-4zM6 5h4v4H6V5zm0 6h4v4H6v-4zm0 6h12v2H6v-2z" />
               </svg>
-            </button>
+            </div>
+            <div>
+              <h3 className="text-[17px] font-bold text-gray-800">
+                Web3 Check-in
+              </h3>
+              <p className="text-[13px] text-gray-500">Daily Achievement</p>
+            </div>
           </div>
         </div>
 
@@ -182,7 +162,7 @@ export const ShareDialog: React.FC<ShareDialogProps> = ({
             </div>
           </div>
 
-          <div className="mt-6">
+          <div className="mt-6 pb-6">
             <button
               onClick={shareToWarpcast}
               className="w-full py-3 px-4 bg-[#4e7cff] text-white font-medium rounded-full flex items-center justify-center"
