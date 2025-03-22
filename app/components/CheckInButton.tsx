@@ -93,7 +93,7 @@ export const CheckInButton = () => {
     }
 
     // 构建分享URL，指向支持Farcaster Frame V2规范的端点
-    const shareUrl = `${baseUrl}/api/frame-success?points=${
+    const shareUrl = `${baseUrl}/api/frame-share?points=${
       earnedPoints || 10
     }&streak=${Number(userInfo?.consecutiveCheckIns || 0)}&fid=0`;
 
@@ -167,10 +167,10 @@ export const CheckInButton = () => {
             </span>
           </div>
 
-          {/* 修改分享按钮，使其样式与签到按钮一致 */}
+          {/* 修改分享按钮，使其更小，内部包含分享图标 */}
           <button
             onClick={shareToWarpcast}
-            className="check-in-button mt-4 flex items-center justify-center"
+            className="inline-flex items-center justify-center px-4 py-2 mt-4 bg-indigo-500 hover:bg-indigo-600 text-white rounded-full text-sm"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -267,12 +267,12 @@ export const CheckInButton = () => {
         </>
       )}
 
-      {/* 显示分享按钮 */}
+      {/* 显示分享按钮 - 更小的设计 */}
       {showShareButton && (
         <div className="mt-4 flex justify-center">
           <button
             onClick={shareToWarpcast}
-            className="check-in-button flex items-center justify-center"
+            className="inline-flex items-center justify-center px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-full text-sm"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

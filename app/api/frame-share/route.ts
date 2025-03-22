@@ -3,8 +3,13 @@ import { NextRequest, NextResponse } from "next/server";
 // Set as dynamic route
 export const dynamic = "force-dynamic";
 
-export async function POST(request: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
+    const url = new URL(request.url);
+    const points = url.searchParams.get("points") || "10";
+    const streak = url.searchParams.get("streak") || "1";
+    const fid = url.searchParams.get("fid") || "0";
+
     // 设置基础URL，优先使用环境变量
     let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "wrapai.app";
     // 确保URL有https://前缀
@@ -12,21 +17,16 @@ export async function POST(request: NextRequest) {
       baseUrl = "https://" + baseUrl;
     }
 
-    // 获取请求数据
-    const body = await request.json();
-    // 获取用户信息
-    const { untrustedData } = body;
-    const fid = untrustedData?.fid || "0";
-
-    // 使用logo作为splash图片
+    // 构建图片URL - 指向一个真实的图片生成端点
+    const imageUrl = `${baseUrl}/api/og-image?points=${points}&streak=${streak}&fid=${fid}`;
     const splashImageUrl = `${baseUrl}/logo-large.png`;
 
     // 严格按照layout.tsx中的方式创建frame对象
     const frame = {
       version: "next",
-      imageUrl: `${baseUrl}/images/wrapai-banner.png`,
+      imageUrl: imageUrl,
       button: {
-        title: "Open App",
+        title: "View App",
         action: {
           type: "launch_frame",
           name: "WrapAI | Daily Check-in System",
@@ -37,19 +37,18 @@ export async function POST(request: NextRequest) {
       },
     };
 
-    // 准备HTML响应，包括必要的元标签
+    // 构建HTML响应，包含必要的元标签
     const html = `
       <!DOCTYPE html>
       <html>
         <head>
-          <title>WrapAI Check-in</title>
-          <meta property="og:title" content="WrapAI Check-in System" />
-          <meta property="og:image" content="${baseUrl}/images/wrapai-banner.png" />
+          <title>WrapAI Check-in Success</title>
+          <meta property="og:title" content="WrapAI Check-in Success" />
+          <meta property="og:image" content="${imageUrl}" />
           <meta property="fc:frame" content="${JSON.stringify(frame)}" />
         </head>
         <body>
-          <div>
-          </div>
+          <p></p>
         </body>
       </html>
     `;
@@ -62,7 +61,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Error processing share:", error);
-    return new NextResponse("Error processing share", { status: 500 });
+    console.error("Error generating frame:", error);
+    return new NextResponse("Error generating frame", { status: 500 });
   }
 }
