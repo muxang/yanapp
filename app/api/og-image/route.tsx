@@ -6,7 +6,7 @@ export const runtime = "edge";
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const username = searchParams.get("username") || "WrapAI User";
+    const username = searchParams.get("userName") || "WrapAI User";
     const streak = searchParams.get("streak") || "1";
     const points = searchParams.get("points") || "10";
 
