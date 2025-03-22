@@ -152,7 +152,7 @@ export default function Home() {
                     strokeLinejoin="round"
                   />
                 </svg>
-                <span>Share as {getUserName()}</span>
+                <span>Share</span>
               </button>
             </header>
 
