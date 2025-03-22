@@ -171,7 +171,7 @@ export const CheckInButton = () => {
           <div className="mt-4 flex justify-center">
             <button
               onClick={shareToWarpcast}
-              className="w-[62px] h-[62px] bg-blue-500 border border-blue-600 flex flex-col items-center justify-center rounded-md"
+              className="w-[60px] h-[60px] bg-gradient-to-br from-primary to-primary-dark hover:from-primary-dark hover:to-primary shadow-md flex flex-col items-center justify-center rounded-full transition-all duration-200 hover:scale-105 active:scale-95"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -189,7 +189,7 @@ export const CheckInButton = () => {
                 <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
                 <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
               </svg>
-              <span className="text-[10px] text-white">Share</span>
+              <span className="text-[10px] text-white font-medium">Share</span>
             </button>
           </div>
         </div>
@@ -277,16 +277,17 @@ export const CheckInButton = () => {
         </>
       )}
 
-      {/* 显示分享按钮 - 蓝色背景 */}
+      {/* 显示分享按钮 */}
       {showShareButton && (
-        <div className="mt-4 flex justify-center">
+        <div className="mt-6 flex justify-center">
           <button
             onClick={shareToWarpcast}
-            className="w-[62px] h-[62px] bg-blue-500 border border-blue-600 flex flex-col items-center justify-center rounded-md"
+            className="share-button"
+            aria-label="Share to Warpcast"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 text-white mb-1"
+              className="h-6 w-6 text-white"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -300,7 +301,7 @@ export const CheckInButton = () => {
               <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
               <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
             </svg>
-            <span className="text-[10px] text-white">Share</span>
+            <span className="share-button-text text-white">Share</span>
           </button>
         </div>
       )}
