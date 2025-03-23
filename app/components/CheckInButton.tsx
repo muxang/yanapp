@@ -237,6 +237,13 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
               points
             </div>
           )}
+
+          <div className="share-button-container">
+            <button id="shareBtn" className="share-main-btn">
+              <i className="fas fa-share-alt"></i>
+              Share My Achievement
+            </button>
+          </div>
         </>
       )}
     </div>

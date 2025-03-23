@@ -1191,33 +1191,42 @@ main {
   }
 }
 
-/* Share button styles */
-.share-btn {
-  transition: all 0.2s ease;
+/* Share Button Styles */
+.share-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.share-main-btn {
+  background: linear-gradient(135deg, #FF9800 0%, #F44336 100%);
+  color: white;
+  padding: 12px 25px;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
   display: flex;
   align-items: center;
-  padding: 4px 12px;
-  border-radius: 20px;
-  background-color: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
 
-.share-btn:hover {
-  background-color: rgba(255, 255, 255, 0.25);
-  transform: translateY(-1px);
+.share-main-btn::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: rotate(45deg);
+  animation: shimmer 2s infinite;
 }
 
-.share-btn:active {
-  transform: translateY(0);
-}
 
-.share-btn .share-icon {
-  margin-right: 6px;
-}
-
-.share-btn span {
-  font-weight: 500;
-}
