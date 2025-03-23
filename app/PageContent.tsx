@@ -8,6 +8,7 @@ import Splash from "./components/Splash";
 import { StatsDisplay } from "./components/StatsDisplay";
 import sdk from "@farcaster/frame-sdk";
 import Link from "next/link";
+import { shareToWarpcast } from "./utils/share";
 
 export default function Home() {
   const { isConnected, address } = useAccount();
@@ -15,6 +16,7 @@ export default function Home() {
   const [showSplash, setShowSplash] = useState(false);
   const [splashExiting, setSplashExiting] = useState(false);
   const [farcasterUsername, setFarcasterUsername] = useState("");
+  const [profileImage, setProfileImage] = useState("");
 
   // 用户的连续签到天数
   const consecutiveDays = Number(userInfo?.consecutiveCheckIns || 0);
@@ -42,6 +44,17 @@ export default function Home() {
           if (username) {
             setFarcasterUsername(username);
             console.log("Farcaster username:", username);
+          }
+
+          // 获取头像 - 安全地访问pfp属性
+          const userPfp =
+            context.user && "pfp" in context.user
+              ? typeof context.user.pfp === "string"
+                ? context.user.pfp
+                : ""
+              : "";
+          if (userPfp) {
+            setProfileImage(userPfp);
           }
         }
       } catch (err) {
@@ -83,36 +96,14 @@ export default function Home() {
     }, 500);
   };
 
-  // 分享到Warpcast - 优化版，包含用户名和自定义图片
-  const shareToWarpcast = () => {
-    // 设置基础URL
-    let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
-    // 确保URL有https://前缀
-    if (
-      typeof baseUrl === "string" &&
-      !baseUrl.startsWith("http://") &&
-      !baseUrl.startsWith("https://")
-    ) {
-      baseUrl = "https://" + baseUrl;
-    }
-
-    const earnedPoints = 200; // 默认值
-    const userName = getUserName();
-
-    // 构建包含用户名的分享文本
-    const shareText = `🎯 ${userName} just completed a ${consecutiveDays}-day check-in streak on WrapAI! Earned ${earnedPoints} points today. #WrapAI #Web3`;
-
-    const shareUrl = `${baseUrl}?points=${earnedPoints}&streak=${consecutiveDays}&userName=${userName}`;
-
-    // 构建图片URL - 使用动态图片生成服务
-
-    // 创建Warpcast分享URL - 使用自定义图片
-    const warpcastUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(
-      shareText
-    )}&embeds[]=${encodeURIComponent(shareUrl)}`;
-
-    // 使用Farcaster SDK打开URL
-    sdk.actions.openUrl(warpcastUrl);
+  // 分享到Warpcast - 使用提取的共享方法
+  const handleShare = () => {
+    shareToWarpcast({
+      userName: getUserName(),
+      consecutiveDays,
+      earnedPoints: totalPoints,
+      userAvatar: profileImage,
+    });
   };
 
   return (
@@ -132,7 +123,7 @@ export default function Home() {
 
               {/* 分享按钮 - 优化设计 */}
               <button
-                onClick={shareToWarpcast}
+                onClick={handleShare}
                 className="points-badge share-btn"
                 aria-label="Share to Warpcast"
               >

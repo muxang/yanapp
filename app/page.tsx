@@ -18,10 +18,20 @@ export async function generateMetadata({
       ? searchParams.userName
       : "WrapAi User";
 
-  const imageUrl =
-    Number(points) > 0
-      ? `${baseUrl}/api/og-image?points=${points}&streak=${streak}&userName=${userName}`
-      : `${baseUrl}/images/wrapai-banner.png`;
+  const userAvatar =
+    typeof searchParams.userAvatar === "string" ? searchParams.userAvatar : "";
+
+  // 构建OG图片URL
+  let imageUrl = `${baseUrl}/images/wrapai-banner.png`;
+
+  if (Number(points) > 0) {
+    imageUrl = `${baseUrl}/api/og-image?points=${points}&streak=${streak}&userName=${userName}`;
+
+    // 如果有头像，添加到URL参数中
+    if (userAvatar) {
+      imageUrl += `&userAvatar=${encodeURIComponent(userAvatar)}`;
+    }
+  }
 
   const frame = {
     version: "next",

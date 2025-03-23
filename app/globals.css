@@ -1200,33 +1200,29 @@ main {
 }
 
 .share-main-btn {
-  background: linear-gradient(135deg, #FF9800 0%, #F44336 100%);
-  color: white;
-  padding: 12px 25px;
-  border-radius: 50px;
-  font-size: 16px;
+  background-color: #f0f4ff;
+  color: #4c6ef5;
+  border: 1px solid #d0daf7;
+  border-radius: 9999px;
+  font-size: 14px;
   font-weight: 600;
-  border: none;
+  padding: 8px 16px;
+  margin-top: 12px;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 8px;
-  box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
-  transition: all 0.2s ease;
+  justify-content: center;
+  white-space: nowrap;
   cursor: pointer;
-  position: relative;
-  overflow: hidden;
 }
 
-.share-main-btn::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: rgba(255, 255, 255, 0.1);
-  transform: rotate(45deg);
-  animation: shimmer 2s infinite;
+.share-main-btn:hover {
+  background-color: #e0e7ff;
+  transform: translateY(-1px);
+}
+
+.share-main-btn i, .share-main-btn svg {
+  margin-right: 8px;
 }
 
 

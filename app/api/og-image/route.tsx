@@ -9,6 +9,7 @@ export async function GET(request: NextRequest) {
     const username = searchParams.get("userName") || "WrapAI User";
     const streak = searchParams.get("streak") || "1";
     const points = searchParams.get("points") || "10";
+    const userAvatar = searchParams.get("userAvatar") || null;
 
     // 构建分享图片
     return new ImageResponse(
@@ -88,16 +89,55 @@ export async function GET(request: NextRequest) {
               maxWidth: "800px",
             }}
           >
-            <h2
+            {/* User info with avatar */}
+            <div
               style={{
-                fontSize: "36px",
-                fontWeight: "bold",
+                display: "flex",
+                alignItems: "center",
                 marginBottom: "20px",
-                textAlign: "center",
               }}
             >
-              {username}'s Achievement
-            </h2>
+              {userAvatar ? (
+                <img
+                  src={userAvatar}
+                  width="80"
+                  height="80"
+                  style={{
+                    borderRadius: "40px",
+                    marginRight: "16px",
+                    border: "3px solid white",
+                  }}
+                  alt={username}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: "80px",
+                    height: "80px",
+                    borderRadius: "40px",
+                    backgroundColor: "rgba(255, 255, 255, 0.2)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: "16px",
+                    fontSize: "36px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {username.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <h2
+                style={{
+                  fontSize: "36px",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                {username}'s Achievement
+              </h2>
+            </div>
+
             <p
               style={{
                 fontSize: "28px",

@@ -8,6 +8,7 @@ import {
 import { useAccount } from "wagmi";
 import { useState, useEffect } from "react";
 import sdk from "@farcaster/frame-sdk";
+import { shareToWarpcast } from "../utils/share";
 
 // 定义组件Props接口
 interface CheckInButtonProps {
@@ -21,7 +22,7 @@ interface CheckInButtonProps {
 export const CheckInButton: React.FC<CheckInButtonProps> = ({
   onCheckInSuccess,
 }) => {
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
   const { checkIn } = useCheckIn();
   const { userInfo, refetch } = useUserInfo();
   const [isLoading, setIsLoading] = useState(false);
@@ -30,10 +31,49 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
   const [earnedPoints, setEarnedPoints] = useState<number | null>(null);
   const [isConsecutive, setIsConsecutive] = useState(false);
   const [showTip, setShowTip] = useState(false);
-  const [showShareButton, setShowShareButton] = useState(false);
+  const [farcasterUsername, setFarcasterUsername] = useState("");
+  const [profileImage, setProfileImage] = useState("");
 
   const { isHasCheckedInToday, isLoading: isCheckStatusLoading } =
     useHasCheckedInToday();
+
+  // 获取Farcaster用户信息
+  useEffect(() => {
+    const getFarcasterUser = async () => {
+      try {
+        await sdk.actions.ready();
+        const context = await sdk.context;
+
+        if (context?.user) {
+          let username = "";
+          if (context.user.displayName) {
+            username = context.user.displayName;
+          } else if (context.user.username) {
+            username = `@${context.user.username}`;
+          }
+
+          if (username) {
+            setFarcasterUsername(username);
+          }
+
+          // 获取头像 - 安全地访问pfp属性
+          const userPfp =
+            context.user && "pfp" in context.user
+              ? typeof context.user.pfp === "string"
+                ? context.user.pfp
+                : ""
+              : "";
+          if (userPfp) {
+            setProfileImage(userPfp);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to get Farcaster user:", err);
+      }
+    };
+
+    getFarcasterUser();
+  }, []);
 
   // 成功后的逻辑
   useEffect(() => {
@@ -71,7 +111,6 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
       setIsLoading(true);
       setError(null);
       setSuccess(false);
-      setShowShareButton(false);
 
       // 根据当前的Day ID检查是否是连续签到
       const currentDayId = Math.floor(Date.now() / 86400);
@@ -138,10 +177,37 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
     return `${hours}h ${minutes}m`;
   };
 
-  if (isHasCheckedInToday || (!canCheckIn && isConnected && userInfo)) {
-    return (
-      <div className="mt-4 w-full">
-        <div className="flex flex-col items-center">
+  // 获取用户名称
+  const getUserName = () => {
+    if (farcasterUsername) return farcasterUsername;
+
+    if (address) {
+      return `${address.substring(0, 6)}...${address.substring(
+        address.length - 4
+      )}`;
+    }
+    return "WrapAI User";
+  };
+
+  // 分享处理
+  const handleShare = () => {
+    const points = isHasCheckedInToday
+      ? Number(userInfo?.totalPoints || 0)
+      : earnedPoints || 0;
+
+    shareToWarpcast({
+      userName: getUserName(),
+      consecutiveDays,
+      earnedPoints: points,
+      userAvatar: profileImage,
+    });
+  };
+
+  // 渲染签到按钮
+  const renderCheckInButton = () => {
+    if (isHasCheckedInToday || (!canCheckIn && isConnected && userInfo)) {
+      return (
+        <>
           <button
             disabled
             className="check-in-button !bg-gray-100 !text-gray-400 border border-gray-200"
@@ -155,101 +221,123 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
               {formatTimeRemaining()}
             </span>
           </div>
-        </div>
-      </div>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <button
+          onClick={handleCheckIn}
+          disabled={!canCheckIn || isLoading || isCheckStatusLoading}
+          className={`check-in-button ${isLoading ? "opacity-70" : ""}`}
+        >
+          {isLoading ? (
+            <div className="flex items-center justify-center">
+              <span className="loading-spinner mr-2"></span>
+              <span>Processing...</span>
+            </div>
+          ) : (
+            <>Check In Now</>
+          )}
+        </button>
+
+        {isEligibleForBonus && (
+          <div className="text-xs text-center mt-2 text-primary">
+            Day {consecutiveDays + 1} streak bonus: +{expectedBonusPoints}{" "}
+            points
+          </div>
+        )}
+      </>
     );
-  }
+  };
 
   return (
     <div className="mt-4 w-full">
       {error && <div className="error-text">{error}</div>}
 
-      {showTip ? (
-        <div className="success-message animate-fade-in">
-          <div className="flex flex-col items-center justify-center py-4 px-6 bg-green-50 border border-green-200 rounded-xl text-green-700 shadow-sm">
-            <div className="text-center">
-              <h3 className="text-lg font-semibold mb-1">
-                Check-in Successful!
-              </h3>
-              {earnedPoints && (
-                <p className="text-sm">
-                  You've earned{" "}
-                  <span className="font-bold">+{earnedPoints} points</span>
-                  {isConsecutive && (
-                    <span className="block text-xs mt-1">
-                      Including {consecutiveDays * consecutiveBonus} bonus
-                      points for your {consecutiveDays}-day streak!
-                    </span>
-                  )}
-                </p>
-              )}
+      <div className="flex flex-col items-center">
+        {showTip ? (
+          <div className="success-message animate-fade-in w-full mb-4">
+            <div className="flex flex-col items-center justify-center py-4 px-6 bg-green-50 border border-green-200 rounded-xl text-green-700 shadow-sm">
+              <div className="text-center">
+                <h3 className="text-lg font-semibold mb-1">
+                  Check-in Successful!
+                </h3>
+                {earnedPoints && (
+                  <p className="text-sm">
+                    You've earned{" "}
+                    <span className="font-bold">+{earnedPoints} points</span>
+                    {isConsecutive && (
+                      <span className="block text-xs mt-1">
+                        Including {consecutiveDays * consecutiveBonus} bonus
+                        points for your {consecutiveDays}-day streak!
+                      </span>
+                    )}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      ) : success ? (
-        <div className="check-in-success flex flex-col items-center justify-center my-2">
-          <div className="w-28 h-28 rounded-full bg-green-50 flex items-center justify-center mb-1">
+        ) : success ? (
+          <div className="check-in-success flex flex-col items-center justify-center mb-4 w-full">
+            <div className="w-28 h-28 rounded-full bg-green-50 flex items-center justify-center mb-1">
+              <svg
+                className="w-16 h-16 text-green-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                strokeWidth="1"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5 13l4 4L19 7"
+                ></path>
+              </svg>
+            </div>
+            <div className="text-sm text-gray-700 mb-1">
+              Today's check-in complete!
+            </div>
+            <div className="text-xs text-gray-500 mb-3">
+              Next check-in available in{" "}
+              <span className="font-medium text-primary">
+                {formatTimeRemaining()}
+              </span>
+            </div>
+          </div>
+        ) : (
+          renderCheckInButton()
+        )}
+
+        {/* 分享按钮 - 始终显示 */}
+        <div className="share-button-container mt-4">
+          <button
+            onClick={handleShare}
+            className="share-main-btn"
+            style={{ display: "flex" }}
+          >
             <svg
-              className="w-16 h-16 text-green-500"
-              fill="none"
-              stroke="currentColor"
+              width="16"
+              height="16"
               viewBox="0 0 24 24"
+              fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              strokeWidth="1"
+              className="share-icon"
             >
               <path
+                d="M18 8C19.6569 8 21 6.65685 21 5C21 3.34315 19.6569 2 18 2C16.3431 2 15 3.34315 15 5C15 5.12548 15.0077 5.24917 15.0227 5.37061L8.08261 9.18838C7.54308 8.46953 6.78914 8 5.93558 8C4.31104 8 3 9.31104 3 10.9356C3 12.5601 4.31104 13.8711 5.93558 13.8711C6.78914 13.8711 7.54308 13.4016 8.08261 12.6827L15.0227 16.5005C15.0077 16.6219 15 16.7456 15 16.8711C15 18.5279 16.3431 19.8711 18 19.8711C19.6569 19.8711 21 18.5279 21 16.8711C21 15.2142 19.6569 13.8711 18 13.8711C17.1464 13.8711 16.3925 14.3406 15.853 15.0595L8.91289 11.2416C8.92786 11.1202 8.93558 10.9965 8.93558 10.8711C8.93558 10.7456 8.92786 10.6219 8.91289 10.5005L15.853 6.68273C16.3925 7.40158 17.1464 7.87113 18 7.87113"
+                stroke="currentColor"
+                strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                d="M5 13l4 4L19 7"
-              ></path>
+              />
             </svg>
-          </div>
-          <div className="text-sm text-gray-700 mb-1">
-            Today's check-in complete!
-          </div>
-          <div className="text-xs text-gray-500">
-            Next check-in available in{" "}
-            <span className="font-medium text-primary">
-              {formatTimeRemaining()}
-            </span>
-          </div>
-        </div>
-      ) : (
-        <>
-          <button
-            onClick={handleCheckIn}
-            disabled={!canCheckIn || isLoading || isCheckStatusLoading}
-            className={`check-in-button ${isLoading ? "opacity-70" : ""}`}
-          >
-            {isLoading ? (
-              <div className="flex items-center justify-center">
-                <span className="loading-spinner mr-2"></span>
-                <span>Processing...</span>
-              </div>
-            ) : (
-              <>Check In Now</>
-            )}
+            <span>Share My Achievement</span>
           </button>
-
-          {isEligibleForBonus && (
-            <div className="text-xs text-center mt-2 text-primary">
-              Day {consecutiveDays + 1} streak bonus: +{expectedBonusPoints}{" "}
-              points
-            </div>
-          )}
-
-          <div className="share-button-container">
-            <button
-              id="shareBtn"
-              className="share-main-btn"
-              style={{ display: "flex" }}
-            >
-              <i className="fas fa-share-alt"></i>
-              Share My Achievement
-            </button>
-          </div>
-        </>
-      )}
+        </div>
+      </div>
     </div>
   );
 };
