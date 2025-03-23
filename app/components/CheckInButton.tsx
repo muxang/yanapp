@@ -239,7 +239,11 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
           )}
 
           <div className="share-button-container">
-            <button id="shareBtn" className="share-main-btn">
+            <button
+              id="shareBtn"
+              className="share-main-btn"
+              style={{ display: "flex" }}
+            >
               <i className="fas fa-share-alt"></i>
               Share My Achievement
             </button>
