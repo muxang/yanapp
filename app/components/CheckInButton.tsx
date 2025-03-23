@@ -199,7 +199,6 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
       userName: getUserName(),
       consecutiveDays,
       earnedPoints: points,
-      userAvatar: profileImage,
     });
   };
 

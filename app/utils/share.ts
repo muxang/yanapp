@@ -4,13 +4,12 @@ interface ShareData {
   userName: string;
   consecutiveDays: number;
   earnedPoints: number;
-  userAvatar?: string; // 添加用户头像URL可选参数
 }
 
 /**
  * 分享到Warpcast的通用函数
  */
-export const shareToWarpcast = (data: ShareData) => {
+export const shareToWarpcast = async (data: ShareData) => {
   // 设置基础URL
   let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
   // 确保URL有https://前缀
@@ -22,10 +21,28 @@ export const shareToWarpcast = (data: ShareData) => {
     baseUrl = "https://" + baseUrl;
   }
 
-  const { userName, consecutiveDays, earnedPoints, userAvatar } = data;
+  const { userName, consecutiveDays, earnedPoints } = data;
+
+  // 从 SDK 上下文中获取用户头像
+  let userAvatar = "";
+  try {
+    await sdk.actions.ready();
+    const context = await sdk.context;
+
+    // 安全地获取头像URL
+    if (
+      context?.user &&
+      "pfp" in context.user &&
+      typeof context.user.pfp === "string"
+    ) {
+      userAvatar = context.user.pfp;
+    }
+  } catch (err) {
+    console.error("Failed to get user avatar from Farcaster SDK:", err);
+  }
 
   // 构建包含用户名的分享文本
-  const shareText = `🎯 ${userName} just completed a ${consecutiveDays}-day check-in streak on WrapAI! Earned ${earnedPoints} points today. #WrapAI #Web3`;
+  const shareText = `🎯 ${userName} just completed a ${consecutiveDays}-day check-in streak on WrapAI! Earned ${earnedPoints} points today. @seneca @dwr.eth`;
 
   // 构建URL参数，包含头像
   const shareParams = new URLSearchParams();
