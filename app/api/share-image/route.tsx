@@ -9,7 +9,6 @@ export async function GET(request: NextRequest) {
     const username = searchParams.get("username") || "WrapAI User";
     const streak = searchParams.get("streak") || "1";
     const points = searchParams.get("points") || "10";
-    const avatar = searchParams.get("avatar"); // 获取头像URL参数
 
     // 构建分享图片
     return new ImageResponse(
@@ -89,30 +88,6 @@ export async function GET(request: NextRequest) {
               maxWidth: "800px",
             }}
           >
-            {/* User Avatar - 只在有头像时显示 */}
-            {avatar && (
-              <div
-                style={{
-                  marginBottom: "20px",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                <img
-                  src={avatar}
-                  width="80"
-                  height="80"
-                  style={{
-                    borderRadius: "50%",
-                    border: "3px solid rgba(255, 255, 255, 0.5)",
-                    objectFit: "cover",
-                  }}
-                  alt={username}
-                />
-              </div>
-            )}
-
             <h2
               style={{
                 fontSize: "36px",

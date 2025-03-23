@@ -140,18 +140,18 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
 
   if (isHasCheckedInToday || (!canCheckIn && isConnected && userInfo)) {
     return (
-      <div className="w-full">
+      <div className="mt-4 w-full">
         <div className="flex flex-col items-center">
           <button
             disabled
-            className="w-full bg-gray-100 text-gray-400 font-bold py-3 px-6 rounded-full flex items-center justify-center"
+            className="check-in-button !bg-gray-100 !text-gray-400 border border-gray-200"
             style={{ cursor: "not-allowed", opacity: 0.8 }}
           >
             Already Checked In
           </button>
           <div className="text-sm text-center mt-2 text-gray-500">
             Next check-in available in{" "}
-            <span className="font-medium text-[#4776E6]">
+            <span className="font-medium text-primary">
               {formatTimeRemaining()}
             </span>
           </div>
@@ -161,13 +161,11 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
   }
 
   return (
-    <div className="w-full">
-      {error && (
-        <div className="text-red-500 text-sm text-center mb-2">{error}</div>
-      )}
+    <div className="mt-4 w-full">
+      {error && <div className="error-text">{error}</div>}
 
       {showTip ? (
-        <div className="animate-fade-in">
+        <div className="success-message animate-fade-in">
           <div className="flex flex-col items-center justify-center py-4 px-6 bg-green-50 border border-green-200 rounded-xl text-green-700 shadow-sm">
             <div className="text-center">
               <h3 className="text-lg font-semibold mb-1">
@@ -189,7 +187,7 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
           </div>
         </div>
       ) : success ? (
-        <div className="flex flex-col items-center justify-center my-2">
+        <div className="check-in-success flex flex-col items-center justify-center my-2">
           <div className="w-28 h-28 rounded-full bg-green-50 flex items-center justify-center mb-1">
             <svg
               className="w-16 h-16 text-green-500"
@@ -211,7 +209,7 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
           </div>
           <div className="text-xs text-gray-500">
             Next check-in available in{" "}
-            <span className="font-medium text-[#4776E6]">
+            <span className="font-medium text-primary">
               {formatTimeRemaining()}
             </span>
           </div>
@@ -221,41 +219,20 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
           <button
             onClick={handleCheckIn}
             disabled={!canCheckIn || isLoading || isCheckStatusLoading}
-            className={`w-full bg-gradient-to-r from-[#4776E6] to-[#8E54E9] text-white font-bold py-3 px-6 rounded-full flex items-center justify-center ${
-              isLoading ? "opacity-70" : ""
-            }`}
+            className={`check-in-button ${isLoading ? "opacity-70" : ""}`}
           >
             {isLoading ? (
               <div className="flex items-center justify-center">
-                <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
+                <span className="loading-spinner mr-2"></span>
                 <span>Processing...</span>
               </div>
             ) : (
-              "Check in Now"
+              <>Check In Now</>
             )}
           </button>
 
           {isEligibleForBonus && (
-            <div className="text-xs text-center mt-2 text-[#4776E6]">
+            <div className="text-xs text-center mt-2 text-primary">
               Day {consecutiveDays + 1} streak bonus: +{expectedBonusPoints}{" "}
               points
             </div>
