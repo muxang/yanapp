@@ -32,10 +32,10 @@ export const shareToWarpcast = async (data: ShareData) => {
     // 安全地获取头像URL
     if (
       context?.user &&
-      "pfp" in context.user &&
-      typeof context.user.pfp === "string"
+      "pfpUrl" in context.user &&
+      typeof context.user.pfpUrl === "string"
     ) {
-      userAvatar = context.user.pfp;
+      userAvatar = context.user.pfpUrl;
     }
   } catch (err) {
     console.error("Failed to get user avatar from Farcaster SDK:", err);
