@@ -134,6 +134,9 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
       const tx = await checkIn();
       await sdk.actions.ready();
 
+      // 等待交易确认后刷新用户信息
+      await refetch();
+
       setSuccess(true);
       setEarnedPoints(expectedPoints);
       setIsConsecutive(isConsecutiveCheckIn);
@@ -280,22 +283,6 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
           </div>
         ) : success ? (
           <div className="check-in-success flex flex-col items-center justify-center mb-4 w-full">
-            <div className="w-28 h-28 rounded-full bg-green-50 flex items-center justify-center mb-1">
-              <svg
-                className="w-16 h-16 text-green-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                strokeWidth="1"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M5 13l4 4L19 7"
-                ></path>
-              </svg>
-            </div>
             <div className="text-sm text-gray-700 mb-1">
               Today's check-in complete!
             </div>
