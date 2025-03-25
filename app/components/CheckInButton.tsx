@@ -5,10 +5,12 @@ import {
   useUserInfo,
   useHasCheckedInToday,
 } from "../hooks/useContract";
-import { useAccount } from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
 import { useState, useEffect } from "react";
 import sdk from "@farcaster/frame-sdk";
 import { shareToWarpcast } from "../utils/share";
+import { CHECK_IN_ABI } from "../contracts/abi";
+import { getContractConfig } from "../contracts/config";
 
 // 定义组件Props接口
 interface CheckInButtonProps {
@@ -33,6 +35,27 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
   const [showTip, setShowTip] = useState(false);
   const [farcasterUsername, setFarcasterUsername] = useState("");
   const [profileImage, setProfileImage] = useState("");
+
+  const config = getContractConfig();
+  const { data: dailyPoints } = useReadContract({
+    address: config.address,
+    abi: CHECK_IN_ABI,
+    functionName: "dailyPoints",
+    query: {
+      enabled: true,
+      staleTime: 5000,
+    },
+  });
+
+  const { data: consecutiveBonus } = useReadContract({
+    address: config.address,
+    abi: CHECK_IN_ABI,
+    functionName: "consecutiveBonus",
+    query: {
+      enabled: true,
+      staleTime: 5000,
+    },
+  });
 
   const { isHasCheckedInToday, isLoading: isCheckStatusLoading } =
     useHasCheckedInToday();
@@ -91,6 +114,7 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
           });
         }
 
+        // 刷新数据
         refetch();
       }, 2500);
       return () => clearTimeout(timer);
@@ -125,11 +149,11 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
         : 1;
 
       // 计算预期获得的积分
-      const dailyPoints = 10; // 从合约中获取
-      const consecutiveBonus = 5; // 从合约中获取
       const expectedPoints =
-        dailyPoints +
-        (isConsecutiveCheckIn ? consecutiveDays * consecutiveBonus : 0);
+        Number(dailyPoints || 0) +
+        (isConsecutiveCheckIn
+          ? consecutiveDays * Number(consecutiveBonus || 0)
+          : 0);
 
       const tx = await checkIn();
       await sdk.actions.ready();
@@ -137,9 +161,24 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
       // 等待交易确认后刷新用户信息
       await refetch();
 
+      // 等待一段时间确保数据已更新
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // 再次刷新以确保获取最新数据
+      const updatedUserInfo = await refetch();
+
       setSuccess(true);
       setEarnedPoints(expectedPoints);
       setIsConsecutive(isConsecutiveCheckIn);
+
+      // 通知父组件签到成功，使用最新的数据
+      if (onCheckInSuccess) {
+        onCheckInSuccess({
+          earnedPoints: expectedPoints,
+          consecutiveDays: consecutiveDays,
+          isConsecutive: isConsecutiveCheckIn,
+        });
+      }
     } catch (err) {
       console.error("Check-in error:", err);
       setError("Failed to check in. Please try again.");
@@ -160,10 +199,8 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
 
   // 获取连续签到天数和奖励
   const consecutiveDays = Number(userInfo?.consecutiveCheckIns || 0);
-  const dailyPoints = 10; // 从合约中获取
-  const consecutiveBonus = 5; // 从合约中获取
   const expectedBonusPoints = isEligibleForBonus
-    ? (consecutiveDays + 1) * consecutiveBonus
+    ? (consecutiveDays + 1) * Number(consecutiveBonus || 0)
     : 0;
 
   // 计算下次签到的等待时间
@@ -272,7 +309,8 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
                     <span className="font-bold">+{earnedPoints} points</span>
                     {isConsecutive && (
                       <span className="block text-xs mt-1">
-                        Including {consecutiveDays * consecutiveBonus} bonus
+                        Including{" "}
+                        {consecutiveDays * Number(consecutiveBonus || 0)} bonus
                         points for your {consecutiveDays}-day streak!
                       </span>
                     )}
