@@ -150,12 +150,49 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
 
     try {
       setIsLoading(true);
+      setError(null);
+      setSuccess(false);
+
+      // 根据当前的Day ID检查是否是连续签到
+      const currentDayId = Math.floor(Date.now() / 86400);
+      const lastCheckInDayId = userInfo?.lastCheckInDayId
+        ? Number(userInfo.lastCheckInDayId)
+        : 0;
+      const isConsecutiveCheckIn = lastCheckInDayId === currentDayId - 1;
+
+      // 获取连续签到天数
+      const consecutiveDays = isConsecutiveCheckIn
+        ? Number(userInfo?.consecutiveCheckIns || 0) + 1
+        : 1;
+
+      // 计算预期获得的积分
+      const expectedPoints =
+        Number(dailyPoints || 0) +
+        (isConsecutiveCheckIn
+          ? consecutiveDays * Number(consecutiveBonus || 0)
+          : 0);
+
       await checkIn();
-      await addPoints(10);
+      await addPoints(expectedPoints);
+
+      // 更新状态
+      setSuccess(true);
+      setEarnedPoints(expectedPoints);
+      setIsConsecutive(isConsecutiveCheckIn);
+
+      // 等待一段时间确保数据已更新
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // 刷新数据
+      await refetch();
+
+      // 分享
       await handleShare();
+
       toast.success("Check-in successful!");
     } catch (error) {
       console.error("Check-in failed:", error);
+      setError("Failed to check in. Please try again.");
       toast.error("Failed to check in");
     } finally {
       setIsLoading(false);
@@ -300,7 +337,7 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
         {/* 分享按钮 - 始终显示 */}
         <div className="share-button-container mt-4">
           <button
-            onClick={handleCheckIn}
+            onClick={handleShare}
             className="share-main-btn"
             style={{ display: "flex" }}
           >
