@@ -1,16 +1,19 @@
 "use client";
 
-import {
-  useCheckIn,
-  useUserInfo,
-  useHasCheckedInToday,
-} from "../hooks/useContract";
+import { useCheckIn, useUserInfo } from "../hooks/useContract";
 import { useAccount, useReadContract } from "wagmi";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import sdk from "@farcaster/frame-sdk";
 import { shareToWarpcast } from "../utils/share";
 import { CHECK_IN_ABI } from "../contracts/abi";
 import { getContractConfig } from "../contracts/config";
+import { toast } from "react-hot-toast";
+import { cn } from "../utils/cn";
+import { CheckCircle, Calendar, Share2 } from "lucide-react";
+import { usePoints } from "../hooks/usePoints";
+import { useHasCheckedInToday } from "../hooks/useHasCheckedInToday";
+import { useConsecutiveDays } from "../hooks/useConsecutiveDays";
+import { useToast } from "../hooks/useToast";
 
 // 定义组件Props接口
 interface CheckInButtonProps {
@@ -57,8 +60,9 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
     },
   });
 
-  const { isHasCheckedInToday, isLoading: isCheckStatusLoading } =
+  const { isHasCheckedInToday, isLoading: isCheckingIn } =
     useHasCheckedInToday();
+  const { addPoints } = usePoints();
 
   // 获取Farcaster用户信息
   useEffect(() => {
@@ -128,60 +132,31 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
     onCheckInSuccess,
   ]);
 
+  const handleShare = async () => {
+    try {
+      const currentPoints = Number(userInfo?.totalPoints || 0);
+      await shareToWarpcast({
+        userName: getUserName(),
+        consecutiveDays: Number(userInfo?.consecutiveCheckIns || 0),
+        earnedPoints: currentPoints,
+      });
+    } catch (error) {
+      console.error("Failed to share:", error);
+    }
+  };
+
   const handleCheckIn = async () => {
-    if (!isConnected) return;
+    if (!isConnected || isHasCheckedInToday) return;
 
     try {
       setIsLoading(true);
-      setError(null);
-      setSuccess(false);
-
-      // 根据当前的Day ID检查是否是连续签到
-      const currentDayId = Math.floor(Date.now() / 86400);
-      const lastCheckInDayId = userInfo?.lastCheckInDayId
-        ? Number(userInfo.lastCheckInDayId)
-        : 0;
-      const isConsecutiveCheckIn = lastCheckInDayId === currentDayId - 1;
-
-      // 获取连续签到天数
-      const consecutiveDays = isConsecutiveCheckIn
-        ? Number(userInfo?.consecutiveCheckIns || 0) + 1
-        : 1;
-
-      // 计算预期获得的积分
-      const expectedPoints =
-        Number(dailyPoints || 0) +
-        (isConsecutiveCheckIn
-          ? consecutiveDays * Number(consecutiveBonus || 0)
-          : 0);
-
-      const tx = await checkIn();
-      await sdk.actions.ready();
-
-      // 等待交易确认后刷新用户信息
-      await refetch();
-
-      // 等待一段时间确保数据已更新
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // 再次刷新以确保获取最新数据
-      const updatedUserInfo = await refetch();
-
-      setSuccess(true);
-      setEarnedPoints(expectedPoints);
-      setIsConsecutive(isConsecutiveCheckIn);
-
-      // 通知父组件签到成功，使用最新的数据
-      if (onCheckInSuccess) {
-        onCheckInSuccess({
-          earnedPoints: expectedPoints,
-          consecutiveDays: consecutiveDays,
-          isConsecutive: isConsecutiveCheckIn,
-        });
-      }
-    } catch (err) {
-      console.error("Check-in error:", err);
-      setError("Failed to check in. Please try again.");
+      await checkIn();
+      await addPoints(10);
+      await handleShare();
+      toast.success("Check-in successful!");
+    } catch (error) {
+      console.error("Check-in failed:", error);
+      toast.error("Failed to check in");
     } finally {
       setIsLoading(false);
     }
@@ -229,19 +204,6 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
     return "WrapAI User";
   };
 
-  // 分享处理
-  const handleShare = () => {
-    const points = isHasCheckedInToday
-      ? Number(userInfo?.totalPoints || 0)
-      : earnedPoints || 0;
-
-    shareToWarpcast({
-      userName: getUserName(),
-      consecutiveDays,
-      earnedPoints: points,
-    });
-  };
-
   // 渲染签到按钮
   const renderCheckInButton = () => {
     if (isHasCheckedInToday || (!canCheckIn && isConnected && userInfo)) {
@@ -268,7 +230,7 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
       <>
         <button
           onClick={handleCheckIn}
-          disabled={!canCheckIn || isLoading || isCheckStatusLoading}
+          disabled={!canCheckIn || isLoading || isCheckingIn}
           className={`check-in-button ${isLoading ? "opacity-70" : ""}`}
         >
           {isLoading ? (
@@ -338,7 +300,7 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
         {/* 分享按钮 - 始终显示 */}
         <div className="share-button-container mt-4">
           <button
-            onClick={handleShare}
+            onClick={handleCheckIn}
             className="share-main-btn"
             style={{ display: "flex" }}
           >
