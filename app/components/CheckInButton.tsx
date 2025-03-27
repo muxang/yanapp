@@ -243,7 +243,7 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
 
   // 渲染签到按钮
   const renderCheckInButton = () => {
-    if (isHasCheckedInToday || (!canCheckIn && isConnected && userInfo)) {
+    if (isHasCheckedInToday) {
       return (
         <>
           <button
@@ -251,7 +251,10 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
             className="check-in-button !bg-gray-100 !text-gray-400 border border-gray-200"
             style={{ cursor: "not-allowed", opacity: 0.8 }}
           >
-            Already Checked In
+            <div className="flex items-center justify-center">
+              <CheckCircle className="w-5 h-5 mr-2" />
+              <span>Already Checked In</span>
+            </div>
           </button>
           <div className="text-sm text-center mt-2 text-gray-500">
             Next check-in available in{" "}
@@ -263,12 +266,26 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
       );
     }
 
+    if (!isConnected) {
+      return (
+        <button
+          disabled
+          className="check-in-button !bg-gray-100 !text-gray-400 border border-gray-200"
+          style={{ cursor: "not-allowed", opacity: 0.8 }}
+        >
+          <div className="flex items-center justify-center">
+            <span>Connect Wallet to Check In</span>
+          </div>
+        </button>
+      );
+    }
+
     return (
       <>
         <button
           onClick={handleCheckIn}
-          disabled={!canCheckIn || isLoading || isCheckingIn}
-          className={`check-in-button ${isLoading ? "opacity-70" : ""}`}
+          disabled={isLoading || isCheckingIn}
+          className={cn("check-in-button", isLoading && "opacity-70")}
         >
           {isLoading ? (
             <div className="flex items-center justify-center">
@@ -276,7 +293,10 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
               <span>Processing...</span>
             </div>
           ) : (
-            <>Check In Now</>
+            <div className="flex items-center justify-center">
+              <Calendar className="w-5 h-5 mr-2" />
+              <span>Check In Now</span>
+            </div>
           )}
         </button>
 
@@ -318,18 +338,6 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
               </div>
             </div>
           </div>
-        ) : success ? (
-          <div className="check-in-success flex flex-col items-center justify-center mb-4 w-full">
-            <div className="text-sm text-gray-700 mb-1">
-              Today's check-in complete!
-            </div>
-            <div className="text-xs text-gray-500 mb-3">
-              Next check-in available in{" "}
-              <span className="font-medium text-primary">
-                {formatTimeRemaining()}
-              </span>
-            </div>
-          </div>
         ) : (
           renderCheckInButton()
         )}
@@ -341,22 +349,7 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
             className="share-main-btn"
             style={{ display: "flex" }}
           >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="share-icon"
-            >
-              <path
-                d="M18 8C19.6569 8 21 6.65685 21 5C21 3.34315 19.6569 2 18 2C16.3431 2 15 3.34315 15 5C15 5.12548 15.0077 5.24917 15.0227 5.37061L8.08261 9.18838C7.54308 8.46953 6.78914 8 5.93558 8C4.31104 8 3 9.31104 3 10.9356C3 12.5601 4.31104 13.8711 5.93558 13.8711C6.78914 13.8711 7.54308 13.4016 8.08261 12.6827L15.0227 16.5005C15.0077 16.6219 15 16.7456 15 16.8711C15 18.5279 16.3431 19.8711 18 19.8711C19.6569 19.8711 21 18.5279 21 16.8711C21 15.2142 19.6569 13.8711 18 13.8711C17.1464 13.8711 16.3925 14.3406 15.853 15.0595L8.91289 11.2416C8.92786 11.1202 8.93558 10.9965 8.93558 10.8711C8.93558 10.7456 8.92786 10.6219 8.91289 10.5005L15.853 6.68273C16.3925 7.40158 17.1464 7.87113 18 7.87113"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <Share2 className="w-4 h-4 mr-2" />
             <span>Share My Achievement</span>
           </button>
         </div>
