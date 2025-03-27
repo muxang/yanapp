@@ -1,6 +1,10 @@
 "use client";
 
-import { useCheckIn, useUserInfo } from "../hooks/useContract";
+import {
+  useCheckIn,
+  useUserInfo,
+  useHasCheckedInToday,
+} from "../hooks/useContract";
 import { useAccount, useReadContract } from "wagmi";
 import { useState, useEffect, useCallback } from "react";
 import sdk from "@farcaster/frame-sdk";
@@ -11,7 +15,6 @@ import { toast } from "react-hot-toast";
 import { cn } from "../utils/cn";
 import { CheckCircle, Calendar, Share2 } from "lucide-react";
 import { usePoints } from "../hooks/usePoints";
-import { useHasCheckedInToday } from "../hooks/useHasCheckedInToday";
 import { useConsecutiveDays } from "../hooks/useConsecutiveDays";
 import { useToast } from "../hooks/useToast";
 
@@ -252,7 +255,6 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
             style={{ cursor: "not-allowed", opacity: 0.8 }}
           >
             <div className="flex items-center justify-center">
-              <CheckCircle className="w-5 h-5 mr-2" />
               <span>Already Checked In</span>
             </div>
           </button>
@@ -294,7 +296,6 @@ export const CheckInButton: React.FC<CheckInButtonProps> = ({
             </div>
           ) : (
             <div className="flex items-center justify-center">
-              <Calendar className="w-5 h-5 mr-2" />
               <span>Check In Now</span>
             </div>
           )}
