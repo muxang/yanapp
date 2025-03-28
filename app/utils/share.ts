@@ -77,7 +77,7 @@ export const shareToWarpcast = async (data: ShareData) => {
   // 随机选择一个用户名
   const randomUser = userNames[Math.floor(Math.random() * userNames.length)];
 
-  const shareText = `🎯 ${userName} just completed a ${consecutiveDays}-day check-in streak on WrapAI! Earned ${earnedPoints} points today. ${randomUser}`;
+  const shareText = `🎯 ${userName} just completed a ${consecutiveDays}-day check-in streak on WrapAI! Earned ${earnedPoints} points today.`;
 
   // 构建URL参数，包含头像
   const shareParams = new URLSearchParams();
