@@ -42,7 +42,42 @@ export const shareToWarpcast = async (data: ShareData) => {
   }
 
   // 构建包含用户名的分享文本
-  const shareText = `🎯 ${userName} just completed a ${consecutiveDays}-day check-in streak on WrapAI! Earned ${earnedPoints} points today. @seneca @dwr.eth`;
+  // 定义可能的用户名列表
+  const userNames = [
+    "@nonlinear.eth",
+    "@alok",
+    "@hades",
+    "@ted",
+    "@matthew",
+    "@giu",
+    "@keccers.eth",
+    "@tayyab",
+    "@brenner.eth",
+    "@0xluo.eth",
+    "@jacek",
+    "@proxystudio.eth",
+    "@six",
+    "@woj.eth",
+    "@antimofm.eth",
+    "@corbin.eth",
+    "@scharf",
+    "@colin",
+    "@july",
+    "@balajis.eth",
+    "@gt",
+    "@nick",
+    "@0xdesigner",
+    "@pfista",
+    "@zachterrell",
+    "@adrienne",
+    "@yitong",
+    "@vgr",
+  ];
+
+  // 随机选择一个用户名
+  const randomUser = userNames[Math.floor(Math.random() * userNames.length)];
+
+  const shareText = `🎯 ${userName} just completed a ${consecutiveDays}-day check-in streak on WrapAI! Earned ${earnedPoints} points today. ${randomUser}`;
 
   // 构建URL参数，包含头像
   const shareParams = new URLSearchParams();

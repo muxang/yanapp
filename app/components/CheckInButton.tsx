@@ -15,8 +15,6 @@ import { toast } from "react-hot-toast";
 import { cn } from "../utils/cn";
 import { CheckCircle, Calendar, Share2 } from "lucide-react";
 import { usePoints } from "../hooks/usePoints";
-import { useConsecutiveDays } from "../hooks/useConsecutiveDays";
-import { useToast } from "../hooks/useToast";
 
 // 定义组件Props接口
 interface CheckInButtonProps {
